@@ -8,11 +8,17 @@ public class Player : Character
     float vMove;
 
     // Update is called once per frame
+
+
     void Update()
     {
         hMove = Input.GetAxis("Horizontal");
         vMove = Input.GetAxis("Vertical");
         Move(hMove, vMove, Input.GetKeyDown(KeyCode.Space));
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Attack();
+        }
     }
 
 }
