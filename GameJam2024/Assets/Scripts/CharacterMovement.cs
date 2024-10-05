@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour {
@@ -29,13 +28,14 @@ public class CharacterMovement : MonoBehaviour {
 
     private bool facingRight = true;
 
+    private bool bTouchingUpperBounds = false;
+    private bool bTouchingLowerBounds = false;
 
     private Vector3 velocity = Vector3.zero;
 
     PlayerInput input;
     Controls controls = new Controls();
 
-    // Start is called before the first frame update
     private void Awake() {
         input = GetComponent<PlayerInput>();
     }
@@ -53,19 +53,22 @@ public class CharacterMovement : MonoBehaviour {
 
     private void Move() {
         if (!onBase && doesCharacterJump) {
-            detectBase();
+            DetectBase();
         }
 
         if (canMove) {
+            if (bTouchingUpperBounds && controls.VerticalMove > 0) controls.VerticalMove = 0;
+            if (bTouchingLowerBounds && controls.VerticalMove < 0) controls.VerticalMove = 0;
+
             Vector3 targetVelocity = new Vector2(controls.HorizontalMove * hSpeed, controls.VerticalMove * vSpeed);
 
-            Vector2 _velocity = Vector3.SmoothDamp(baseRB.velocity, targetVelocity, ref velocity, movementSmooth);
-            baseRB.velocity = _velocity;
+            Vector2 velocity = Vector3.SmoothDamp(baseRB.velocity, targetVelocity, ref this.velocity, movementSmooth);
+            baseRB.velocity = velocity;
 
             if (doesCharacterJump) {
                 if (onBase) {
                     // on base
-                    charRB.velocity = _velocity;
+                    charRB.velocity = velocity;
                 }
                 else {
                     // in air
@@ -73,7 +76,7 @@ public class CharacterMovement : MonoBehaviour {
                         charRB.gravityScale = fallingGravityScale;
                     }
 
-                    charRB.velocity = new Vector2(_velocity.x, charRB.velocity.y);
+                    charRB.velocity = new Vector2(velocity.x, charRB.velocity.y);
                 }
 
                 if (jump) {
@@ -87,25 +90,46 @@ public class CharacterMovement : MonoBehaviour {
 
             // rotate if we're facing the wrong way
             if (controls.HorizontalMove > 0 && !facingRight) {
-                flip();
+                Flip();
             }
             else if (controls.HorizontalMove < 0 && facingRight) {
-                flip();
+                Flip();
             }
         }
     }
 
-    private void flip() {
+    private void Flip() {
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
 
-    private void detectBase() {
+    public bool InAir() {
+        return !onBase;
+    }
 
+    private void DetectBase() {
         RaycastHit2D hit = Physics2D.Raycast(jumpDetector.position, -Vector2.up, detectionDistance, detectLayer);
         if (hit.collider != null) {
             onBase = true;
             currentJumps = 0;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("UpperBounds")) {
+            bTouchingUpperBounds = true;
+        }
+        else if (collision.CompareTag("LowerBounds")) {
+            bTouchingLowerBounds = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.CompareTag("UpperBounds")) {
+            bTouchingUpperBounds = false;
+        }
+        else if (collision.CompareTag("LowerBounds")) {
+            bTouchingLowerBounds = false;
         }
     }
 
