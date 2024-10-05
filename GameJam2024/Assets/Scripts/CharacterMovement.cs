@@ -9,7 +9,9 @@ public class CharacterMovement : MonoBehaviour {
     [Header("Base / Root")]
     [SerializeField] private Rigidbody2D baseRB;
     [SerializeField] private float hSpeed = 10f;
-    [SerializeField] private float vSpeed = 6f;
+    private float vSpeed;
+    [SerializeField] private float groundVSpeed = 6f;
+    [SerializeField] private float airVSpeed = 1f;
     [Range(0, 1.0f)]
     [SerializeField] float movementSmooth = 0.5f;
 
@@ -38,6 +40,7 @@ public class CharacterMovement : MonoBehaviour {
 
     private void Awake() {
         input = GetComponent<PlayerInput>();
+        vSpeed = groundVSpeed;
     }
 
     private void Update() {
@@ -57,8 +60,22 @@ public class CharacterMovement : MonoBehaviour {
         }
 
         if (canMove) {
+
             if (bTouchingUpperBounds && controls.VerticalMove > 0) controls.VerticalMove = 0;
             if (bTouchingLowerBounds && controls.VerticalMove < 0) controls.VerticalMove = 0;
+
+            if (jump) {
+                charRB.velocity = new Vector2(charRB.velocity.x, 0);
+                charRB.AddForce(Vector2.up * jumpVal, ForceMode2D.Impulse);
+                //charRB.velocity = new Vector2(charRB.velocity.x, Mathf.Clamp(charRB.velocity.y, -5, 8));
+                
+                charRB.gravityScale = jumpingGravityScale;
+                jump = false;
+                currentJumps++;
+                onBase = false;
+                
+                vSpeed = airVSpeed;
+            }
 
             Vector3 targetVelocity = new Vector2(controls.HorizontalMove * hSpeed, controls.VerticalMove * vSpeed);
 
@@ -69,6 +86,7 @@ public class CharacterMovement : MonoBehaviour {
                 if (onBase) {
                     // on base
                     charRB.velocity = velocity;
+                    vSpeed = groundVSpeed;
                 }
                 else {
                     // in air
@@ -77,14 +95,6 @@ public class CharacterMovement : MonoBehaviour {
                     }
 
                     charRB.velocity = new Vector2(velocity.x, charRB.velocity.y);
-                }
-
-                if (jump) {
-                    charRB.AddForce(Vector2.up * jumpVal, ForceMode2D.Impulse);
-                    charRB.gravityScale = jumpingGravityScale;
-                    jump = false;
-                    currentJumps++;
-                    onBase = false;
                 }
             }
 
