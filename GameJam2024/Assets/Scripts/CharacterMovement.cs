@@ -46,8 +46,6 @@ public class CharacterMovement : MonoBehaviour {
     [SerializeField] private float hOffset = 0.5f;
     private StateMachine meleeStateMachine;
 
-    private bool bAttackPressed = false;
-
     public bool grounded { get { return onBase; } }
 
 
@@ -63,14 +61,14 @@ public class CharacterMovement : MonoBehaviour {
         if (controls.JumpState && currentJumps < possibleJumps) {
             jump = true;
         }
-    }
-
-    private void FixedUpdate() {
-        Move();
 
         if (controls.AttackState) {
             Attack();
         }
+    }
+
+    private void FixedUpdate() {
+        Move();
     }
 
     private void Move() {
