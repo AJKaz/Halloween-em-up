@@ -24,7 +24,7 @@ public class MeleeBaseState : State
     public override void OnEnter(StateMachine sMachine)
     {
         base.OnEnter(sMachine);
-        animator = GetComponent<Animator>();
+        animator = GameManager.Instance.playerAnimator;
     }
 
     public override void OnUpdate()

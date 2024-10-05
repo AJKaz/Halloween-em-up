@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public List<Enemy> enemies;
 
+    public Animator playerAnimator;
+
     void Awake()
     {
         Instance = this;

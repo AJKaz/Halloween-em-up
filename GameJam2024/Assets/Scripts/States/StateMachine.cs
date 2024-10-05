@@ -7,7 +7,6 @@ public class StateMachine : MonoBehaviour
     public string customName;
 
     private State mainStateType;
-
     public State CurrentState { get; private set; }
     private State nextState;
 

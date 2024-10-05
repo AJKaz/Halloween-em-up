@@ -135,11 +135,12 @@ public class CharacterMovement : MonoBehaviour {
             Debug.Log("Hit Enemy " + enemy.enemyName);
         }
 
-        /* if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState)) {
-
-
-             meleeStateMachine.SetNextState(new MeleeEntryState());
-         }*/
+        if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
+        {
+            Debug.Log("Attack");
+            meleeStateMachine.SetNextState(new MeleeEntryState());
+        }
+    
 
     }
 

@@ -7,7 +7,7 @@ public class Character : MonoBehaviour
 {
     [Header("Stats")]
     [SerializeField] protected float health = 500f;
-
+    
 
     [Header("Ground")]
     [SerializeField] protected bool canMove = true;
@@ -32,7 +32,7 @@ public class Character : MonoBehaviour
     private StateMachine meleeStateMachine;
     [SerializeField] private Collider hurtbox;
     [SerializeField] private Collider hitbox;
-
+    [SerializeField] private Animator ani;
     public void Awake()
     {
         meleeStateMachine = GetComponent<StateMachine>();
