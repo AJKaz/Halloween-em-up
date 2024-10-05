@@ -1,37 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Tilemaps;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Character : MonoBehaviour
 {
+    [Header("Stats")]
+    [SerializeField] protected float health = 500f;
+
     [Header("Ground")]
-    [SerializeField] private float hSpeed = 100f;
-    [SerializeField] private float vSpeed = 50f;
+    [SerializeField] private float hSpeed = 5000f;
+    [SerializeField] private float vSpeed = 3500f;
     [Range(0, 1.0f)]
     [SerializeField] private Rigidbody2D trueRB;
     [SerializeField] private float clampValue = 5;
     [SerializeField] private float offset = 1.0f;
     private bool faceRight = true;
-    private Vector3 velocity;
 
     [Header("Jump")]
     [SerializeField] private Rigidbody2D spriteRB;
     [SerializeField] float jumpForce = 7f;
-    [SerializeField] private int jumpCount = 1;
-    [SerializeField] private bool grounded = true;
+    private bool grounded = true;
     [SerializeField] private float detectionDistance = 0.1f;
     [SerializeField] private LayerMask detectLayer;
     [SerializeField] private float risingGravity;
     [SerializeField] private float fallingGravity;
-    private bool jump;
-    private Transform spriteT;
-
-    private void Awake()
-    {
-        spriteT = spriteRB.transform;
-    }
 
     public void Move(float hMove, float vMove, bool jump)
     {
