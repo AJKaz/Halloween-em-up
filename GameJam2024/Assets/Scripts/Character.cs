@@ -10,20 +10,19 @@ public class Character : MonoBehaviour
     [Header("Ground")]
     [SerializeField] private float hSpeed = 5000f;
     [SerializeField] private float vSpeed = 3500f;
-    [Range(0, 1.0f)]
     [SerializeField] private Rigidbody2D trueRB;
     [SerializeField] private float clampValue = 5;
-    [SerializeField] private float offset = 1.0f;
+    [SerializeField] private float offset = 1.05f;
     private bool faceRight = true;
 
     [Header("Jump")]
     [SerializeField] private Rigidbody2D spriteRB;
     [SerializeField] float jumpForce = 7f;
     private bool grounded = true;
-    [SerializeField] private float detectionDistance = 0.1f;
+    [SerializeField] private float detectionDistance = 1.05f;
     [SerializeField] private LayerMask detectLayer;
-    [SerializeField] private float risingGravity;
-    [SerializeField] private float fallingGravity;
+    [SerializeField] private float risingGravity = 1;
+    [SerializeField] private float fallingGravity = 1.5f;
 
     public void Move(float hMove, float vMove, bool jump)
     {
