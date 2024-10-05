@@ -9,7 +9,7 @@ public class GroundMeleeState3 : MeleeBaseState
         base.OnEnter(sMachine);
 
         attackIndex = 3;
-        duration = 0.5f;
+        duration = .9f;
         animator.SetTrigger("Attack" + attackIndex);
         Debug.Log("Player Attack " + attackIndex + " fired");
     }
@@ -23,6 +23,10 @@ public class GroundMeleeState3 : MeleeBaseState
             if (launch)
             {
                 stateMachine.SetNextState(new LaunchMeleeState());
+            }
+            else
+            {
+                stateMachine.SetNextStateToMain();
             }
         }
     }
