@@ -10,7 +10,7 @@ public class Character : MonoBehaviour
     [Header("Ground")]
     [SerializeField] private float hSpeed = 5000f;
     [SerializeField] private float vSpeed = 3500f;
-    [SerializeField] private Rigidbody2D trueRB;
+    [SerializeField] protected Rigidbody2D trueRB;
     [SerializeField] private float clampValue = 5;
     [SerializeField] private float offset = 1.05f;
     private bool faceRight = true;
@@ -94,6 +94,11 @@ public class Character : MonoBehaviour
             spriteRB.velocity = new Vector2(spriteRB.velocity.x, 0);
             spriteRB.gravityScale = 0;
         }
+    }
+
+    protected void ZeroAllVelocity() {
+        trueRB.velocity = Vector3.zero;
+        spriteRB.velocity = Vector3.zero;
     }
 
     private void OnDrawGizmos()

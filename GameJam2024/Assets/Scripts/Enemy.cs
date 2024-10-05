@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Enemy : Character
 {
@@ -24,6 +25,8 @@ public class Enemy : Character
         }
 
         if (InAttackRange()) {
+            ZeroAllVelocity();
+
             StartAttack();
         }
         else if (ShouldPathToPlayer()) {
@@ -52,19 +55,14 @@ public class Enemy : Character
 
     void PathToPosition(Vector3 position) {
         Vector2 direction = position - transform.position;
-        direction.Normalize();
-
-        Move(direction.x, direction.y, false);
-        
-    }
-
-    void MoveTo(Vector2 direction, float speed) {
-        float scaledSpeed = Time.deltaTime * speed;
-
-        Vector3 newPos = transform.position;
-        newPos.x += direction.x * scaledSpeed;
-        newPos.y += direction.y * scaledSpeed;
-        transform.position = newPos;
+        if (direction.magnitude > attackRange) {
+            direction.Normalize();
+            
+            Move(direction.x, direction.y, false);
+        }
+        else {
+            ZeroAllVelocity(); 
+        }
     }
 
     void RunAway() {
@@ -75,7 +73,6 @@ public class Enemy : Character
         // Note: It's okay if this is run every frame, technically worse for performance but ok for this scale
         Vector2 direction = new Vector2(-1, 0);
         direction.Normalize();
-        //MoveTo(direction, runAwaySpeedMultiplier);
         Move(direction.x, direction.y, false);
     }
 
