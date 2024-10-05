@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public Player player;
+    public CharacterMovement player;
 
     public List<Enemy> enemies;
 

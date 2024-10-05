@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Enemy : Character
+public class Enemy : MonoBehaviour
 {
     private bool bAttacking = false;
 
-    [SerializeField]
-    private float runAwaySpeedMultiplier = 1.5f;
-    [SerializeField]
-    private float attackRange = 1.25f;
+    [SerializeField] private float health = 100f;
+
+    [SerializeField] private float runAwaySpeedMultiplier = 1.5f;
+    [SerializeField] private float attackRange = 1.25f;
+
+    public string enemyName = "No Name";
 
     void Update()
     {
@@ -25,7 +27,7 @@ public class Enemy : Character
         }
 
         if (InAttackRange()) {
-           ZeroAllVelocity();
+           // ZeroAllVelocity();
 
             StartAttack();
         }
@@ -58,10 +60,10 @@ public class Enemy : Character
         if (direction.magnitude > attackRange) {
             direction.Normalize();
             
-            Move(direction.x, direction.y, false);
+            //Move(direction.x, direction.y, false);
         }
         else {
-           ZeroAllVelocity(); 
+          // ZeroAllVelocity(); 
         }
     }
 
@@ -73,7 +75,7 @@ public class Enemy : Character
         // Note: It's okay if this is run every frame, technically worse for performance but ok for this scale
         Vector2 direction = new Vector2(-1, 0);
         direction.Normalize();
-        Move(direction.x, direction.y, false);
+       //Move(direction.x, direction.y, false);
     }
 
     bool InAttackRange() {

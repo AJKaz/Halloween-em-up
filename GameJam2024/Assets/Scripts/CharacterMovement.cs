@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -38,9 +39,23 @@ public class CharacterMovement : MonoBehaviour {
     PlayerInput input;
     Controls controls = new Controls();
 
+    [Header("Combat State")]
+    [SerializeField] private float hAttackRange = 1.5f;
+    [SerializeField] private float vAttackRange = 0.5f;
+    [SerializeField] private float vOffset = 0.5f;
+    [SerializeField] private float hOffset = 0.5f;
+    private StateMachine meleeStateMachine;
+
+    private bool bAttackPressed = false;
+
+    public bool grounded { get { return onBase; } }
+
+
     private void Awake() {
         input = GetComponent<PlayerInput>();
         vSpeed = groundVSpeed;
+
+        meleeStateMachine = GetComponent<StateMachine>();
     }
 
     private void Update() {
@@ -52,6 +67,10 @@ public class CharacterMovement : MonoBehaviour {
 
     private void FixedUpdate() {
         Move();
+
+        if (controls.AttackState) {
+            Attack();
+        }
     }
 
     private void Move() {
@@ -106,15 +125,56 @@ public class CharacterMovement : MonoBehaviour {
                 Flip();
             }
         }
+
+       
+    }
+
+    public void Attack() {
+        Debug.Log("Attack");
+
+        List<Enemy> enemiesToHit = GetEnemiesInRange();
+        foreach (Enemy enemy in enemiesToHit) {
+            Debug.Log("Hit Enemy " + enemy.enemyName);
+        }
+
+        /* if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState)) {
+
+
+             meleeStateMachine.SetNextState(new MeleeEntryState());
+         }*/
+
+    }
+
+    public List<Enemy> GetEnemiesInRange() {
+        // WARNING: ASSUMES PLAYER AND ENEMIES ARE GROUNDED
+
+        List<Enemy> enemiesInRange = new List<Enemy>();
+
+        Vector2 playerPosition = transform.position;
+        
+        foreach (Enemy enemy in GameManager.Instance.enemies) {
+            Vector2 enemyPosition = enemy.transform.position;
+
+            float vDistance = Mathf.Abs(enemyPosition.y - (playerPosition.y + vOffset));
+            if (vDistance <= vAttackRange) {
+                // Within vertical attack range, now check horizontal attack range
+                float hDistance = enemyPosition.x - playerPosition.x - (facingRight ? hOffset : -hOffset);
+                
+                if (facingRight && hDistance >= 0 && hDistance <= hAttackRange) {
+                    enemiesInRange.Add(enemy);
+                }
+                else if (!facingRight && hDistance <= 0 && Mathf.Abs(hDistance)  <= hAttackRange) {
+                    enemiesInRange.Add(enemy);
+                }
+            }
+        }
+
+        return enemiesInRange;
     }
 
     private void Flip() {
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
-    }
-
-    public bool InAir() {
-        return !onBase;
     }
 
     private void DetectBase() {
@@ -147,5 +207,27 @@ public class CharacterMovement : MonoBehaviour {
         if (doesCharacterJump) {
             Gizmos.DrawRay(jumpDetector.transform.position, -Vector3.up * detectionDistance);
         }
+
+        DrawAttackRange();
+
+    }
+
+    private void DrawAttackRange() {
+        Gizmos.color = Color.cyan;
+
+        Vector2 playerPos = transform.position;
+
+        Vector2 boxCenter = playerPos + new Vector2(facingRight ? (hAttackRange / 2) + hOffset : -(hAttackRange / 2) - hOffset, vOffset);
+        Gizmos.DrawWireCube(boxCenter, new Vector2(hAttackRange, vAttackRange * 2));
+    }
+
+    private void DrawBoxCollider(BoxCollider2D collider, Color color) {
+        Gizmos.color = color;
+
+        Vector2 size = collider.size;
+        Vector2 offset = collider.offset;
+
+        Vector2 position = (Vector2)transform.position + offset;
+        Gizmos.DrawWireCube(position, size);
     }
 }
