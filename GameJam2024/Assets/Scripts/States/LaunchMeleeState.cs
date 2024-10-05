@@ -25,7 +25,10 @@ public class LaunchMeleeState : MeleeBaseState
             {
                 stateMachine.SetNextState(new AirMeleeState());
             }
-            
+            else
+            {
+                stateMachine.SetNextStateToMain();
+            }
         }
     }
 }

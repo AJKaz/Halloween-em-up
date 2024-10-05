@@ -16,7 +16,7 @@ public class MeleeBaseState : State
     protected bool nextCombo;
 
     //decide if launch should come out
-    protected bool launch;
+    protected bool launch = false;
 
     protected int attackIndex;
 
@@ -29,7 +29,8 @@ public class MeleeBaseState : State
 
     public override void OnUpdate()
     {
-        if (attackSignal)
+        base.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.U))
         {
             nextCombo = true;
         }

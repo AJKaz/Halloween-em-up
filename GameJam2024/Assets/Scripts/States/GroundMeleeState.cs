@@ -28,6 +28,10 @@ public class GroundMeleeState : MeleeBaseState
             {
                 stateMachine.SetNextState(new LaunchMeleeState());
             }
+            else
+            {
+                stateMachine.SetNextStateToMain();
+            }
         }
     }
 }
