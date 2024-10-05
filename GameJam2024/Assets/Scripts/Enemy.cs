@@ -25,7 +25,7 @@ public class Enemy : Character
         }
 
         if (InAttackRange()) {
-            ZeroAllVelocity();
+           ZeroAllVelocity();
 
             StartAttack();
         }
@@ -61,7 +61,7 @@ public class Enemy : Character
             Move(direction.x, direction.y, false);
         }
         else {
-            ZeroAllVelocity(); 
+           ZeroAllVelocity(); 
         }
     }
 

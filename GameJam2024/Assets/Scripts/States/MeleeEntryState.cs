@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MeleeEntryState : MeleeBaseState
@@ -14,14 +15,16 @@ public class MeleeEntryState : MeleeBaseState
    public override void OnEnter(StateMachine sMachine)
    {
         base.OnEnter(sMachine);
-
+        
+        grounded = GetComponent<Character>().grounded;
+        Debug.Log(grounded);
         if (grounded)
         {
-            State nextState = (State)new GroundMeleeState();
+            sMachine.SetNextState(new GroundMeleeState());
         }
         else
         {
-            State nextState = (State)new AirMeleeState();
+            sMachine.SetNextState(new AirMeleeState());
         }
    }
 }

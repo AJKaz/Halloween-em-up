@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -7,17 +8,19 @@ public class Character : MonoBehaviour
     [Header("Stats")]
     [SerializeField] protected float health = 500f;
 
+
     [Header("Ground")]
     [SerializeField] protected bool canMove = true;
     [SerializeField] private float hSpeed = 5000f;
     [SerializeField] private float vSpeed = 3500f;
-    [SerializeField] protected Rigidbody trueRB;
+    [Range(0, 1.0f)]
+    [SerializeField] protected Rigidbody2D trueRB;
     [SerializeField] private float clampValue = 5;
     [SerializeField] private float offset = 1.05f;
     private bool faceRight = true;
 
     [Header("Jump")]
-    [SerializeField] private Rigidbody spriteRB;
+    [SerializeField] private Rigidbody2D spriteRB;
     [SerializeField] float jumpForce = 7f;
     public bool grounded = true;
     [SerializeField] private float detectionDistance = 1.05f;
@@ -27,17 +30,23 @@ public class Character : MonoBehaviour
 
     [Header("Combat State")]
     private StateMachine meleeStateMachine;
-    [SerializeField] private Collider2D hitbox;
+    [SerializeField] private Collider hurtbox;
+    [SerializeField] private Collider hitbox;
 
     public void Awake()
     {
         meleeStateMachine = GetComponent<StateMachine>();
+
     }
 
     public void Move(float hMove, float vMove, bool jump)
     {
         if (canMove)
         {
+
+            //Debug.Log("transform " + spriteRB.transform.position);
+            //Debug.Log("Velocity " + spriteRB.velocity);
+            //Debug.Log("Vmove" + vMove);
 
             if (!grounded)
             {
@@ -61,7 +70,7 @@ public class Character : MonoBehaviour
 
             if (grounded)
             {
-                newPos.y = trueRB.transform.position.y + offset;
+                newPos.y = trueRB.transform.position.y;
             }
 
             newPos.z = 0;
@@ -69,7 +78,7 @@ public class Character : MonoBehaviour
 
             if (jump && grounded)
             {
-                //Debug.Log("Jump");
+                Debug.Log("Jump");
                 spriteRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 spriteRB.gravityScale = risingGravity;
                 grounded = false;
@@ -84,17 +93,13 @@ public class Character : MonoBehaviour
                 Flip();
             }
         }
-
-        //Debug.Log("transform " + spriteRB.transform.position);
-        //Debug.Log("Velocity " + spriteRB.velocity);
-        //Debug.Log("Vmove" + vMove);
-
     }
 
     public void Attack()
     {
         if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
         {
+            Debug.Log("Attack");
             meleeStateMachine.SetNextState(new MeleeEntryState());
         }
 
@@ -128,4 +133,5 @@ public class Character : MonoBehaviour
     {
         Gizmos.DrawRay(spriteRB.transform.position, Vector3.down * detectionDistance);
     }
+
 }
