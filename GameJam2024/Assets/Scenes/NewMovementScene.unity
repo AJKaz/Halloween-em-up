@@ -446,7 +446,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.30713776, g: 0.31243324, b: 0.3207547, a: 0}
+  m_BackGroundColor: {r: 0.082893714, g: 0.0719562, b: 0.1981132, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -580,8 +580,8 @@ Transform:
   m_GameObject: {fileID: 594909762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.5, y: -1.3, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalPosition: {x: 10.47, y: 0.01, z: 0}
+  m_LocalScale: {x: 0.67235, y: 0.67235, z: 1.3447}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -664,7 +664,7 @@ Transform:
   m_GameObject: {fileID: 648241326}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.5, y: 1.41, z: 0}
+  m_LocalPosition: {x: 5.5, y: 0.78, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -815,6 +815,7 @@ MonoBehaviour:
   enemies:
   - {fileID: 888073262}
   - {fileID: 385710746}
+  playerAnimator: {fileID: 2032919538}
 --- !u!4 &1983118590
 Transform:
   m_ObjectHideFlags: 0
@@ -830,6 +831,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &2032919538 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2672496625003759580, guid: 0098562d222fa1a468a44610779f16f8, type: 3}
+  m_PrefabInstance: {fileID: 6198252742643610014}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6198252742643610014
 PrefabInstance:
   m_ObjectHideFlags: 0
