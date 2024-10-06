@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float hAttackRange = 1.25f;
     [SerializeField] private float vAttackRange = 0.25f;
     [SerializeField] float movementSmooth = 0.005f;
+    /* Whether or not enemy can move */
+    [SerializeField] private bool bCanPath = true;
 
     [Header("Combat")]
     [SerializeField] private float attackDuration = 0.35f;
@@ -55,7 +57,7 @@ public class Enemy : MonoBehaviour
         }
         else if (ShouldPathToPlayer()) {
             // Go Towards Player
-            //PathToPosition(GameManager.Instance.player.transform.position);
+            PathToPosition(GameManager.Instance.player.transform.position);
         }
 
     }
@@ -90,7 +92,7 @@ public class Enemy : MonoBehaviour
     bool ShouldPathToPlayer() {
         // TODO: Define path to parameters
 
-        return health > 0f;
+        return bCanPath && health > 0f;
     }
 
     void StartAttack() {
