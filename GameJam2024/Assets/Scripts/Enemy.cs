@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float vAttackOffset = 0f;
     [SerializeField] private float verticalPathingOffset = 0.15f;
 
+    [Header("Animation/States")]
+    [SerializeField] private Animator animator;
+    private int state;
+
 
     private Vector3 velocity = Vector3.zero;
 
@@ -38,7 +42,8 @@ public class Enemy : MonoBehaviour
 
     private Coroutine damageFlashCoroutine = null;
 
-    private void Awake() {
+    private void Awake()
+    {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -46,27 +51,37 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         UpdateFSM();
+
     }
 
-    void UpdateFSM() {
-        if (bAttacking) {
+    void UpdateFSM()
+    {
+        if (bAttacking)
+        {
             // Continue to do the attack
-            
+            if (animator)
+            {
+                animator.SetTrigger("Attack1");
+            }
+
             return;
         }
 
-        if (InAttackRange()) {
+        if (InAttackRange())
+        {
             rb.velocity = Vector3.zero;
             StartAttack();
         }
-        else if (ShouldPathToPlayer()) {
+        else if (ShouldPathToPlayer())
+        {
             // Go Towards Player
             PathToPosition(GameManager.Instance.player.transform.position);
         }
 
     }
 
-    private void Move(float hMove, float vMove) {
+    private void Move(float hMove, float vMove)
+    {
         if (hMove < 0 && bFacingRight) Flip();
         else if (hMove > 0 && !bFacingRight) Flip();
 
@@ -76,49 +91,58 @@ public class Enemy : MonoBehaviour
         rb.velocity = velocity;
     }
 
-    private void Flip() {
+    private void Flip()
+    {
         bFacingRight = !bFacingRight;
         transform.Rotate(0, 180, 0);
     }
 
-    public void TakeDamage(float damage) {
-        if (damageFlashCoroutine != null) {
+    public void TakeDamage(float damage)
+    {
+        if (damageFlashCoroutine != null)
+        {
             StopCoroutine(damageFlashCoroutine);
         }
         damageFlashCoroutine = StartCoroutine(FlashTint(damageFlashTime, Color.red));
-        
+
         health -= damage;
-        if (health <= 0) {
+        if (health <= 0)
+        {
             spriteRenderer.color = Color.black;
         }
     }
 
-    bool ShouldPathToPlayer() {
+    bool ShouldPathToPlayer()
+    {
         // TODO: Define path to parameters
 
         return bCanPath && health > 0f;
     }
 
-    void StartAttack() {
+    void StartAttack()
+    {
         // TODO: Attack
 
         bAttacking = true;
         StartCoroutine(TEMP_AttackNumerator());
     }
 
-    IEnumerator TEMP_AttackNumerator() {
+    IEnumerator TEMP_AttackNumerator()
+    {
         spriteRenderer.color = Color.blue;
         yield return new WaitForSeconds(attackDuration);
         spriteRenderer.color = Color.white;
         bAttacking = false;
     }
 
-    void PathToPosition(Vector3 position) {
+    void PathToPosition(Vector3 position)
+    {
         Vector2 direction = position - transform.position;
         Vector2 distance = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
         float hActualRange = hAttackRange + hAttackOffset;
         //float vActualRange = vAttackRange;
-        if (distance.x > hActualRange || distance.y > verticalPathingOffset) {
+        if (distance.x > hActualRange || distance.y > verticalPathingOffset)
+        {
             if (distance.x < hActualRange) direction.x = 0;
             if (distance.y < verticalPathingOffset) direction.y = 0;
             else direction.y *= vPriority;
@@ -126,12 +150,14 @@ public class Enemy : MonoBehaviour
 
             Move(direction.x, direction.y);
         }
-        else {
+        else
+        {
             rb.velocity = Vector3.zero;
         }
     }
 
-    bool InAttackRange() {
+    bool InAttackRange()
+    {
         Vector2 playerPosition = GameManager.Instance.player.transform.position;
 
         Vector3 distance = GameManager.Instance.player.transform.position - transform.position;
@@ -139,25 +165,30 @@ public class Enemy : MonoBehaviour
         distance.y = Mathf.Abs(distance.y);
 
         float vDistance = Mathf.Abs(playerPosition.y - (transform.position.y + vAttackOffset));
-        if (vDistance <= vAttackRange) {
+        if (vDistance <= vAttackRange)
+        {
             // Within vertical attack range, now check horizontal attack range
             float hDistance = playerPosition.x - transform.position.x - (bFacingRight ? hAttackOffset : -hAttackOffset);
 
-            if (bFacingRight && hDistance >= 0 && hDistance <= hAttackRange) {
+            if (bFacingRight && hDistance >= 0 && hDistance <= hAttackRange)
+            {
                 return true;
             }
-            if (!bFacingRight && hDistance <= 0 && Mathf.Abs(hDistance) <= hAttackRange) {
+            if (!bFacingRight && hDistance <= 0 && Mathf.Abs(hDistance) <= hAttackRange)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    void OnStunned() {
+    void OnStunned()
+    {
         bAttacking = false;
     }
 
-    private IEnumerator FlashTint(float time, Color color) {
+    private IEnumerator FlashTint(float time, Color color)
+    {
         spriteRenderer.color = color;
 
         yield return new WaitForSeconds(time);
@@ -167,11 +198,13 @@ public class Enemy : MonoBehaviour
         damageFlashCoroutine = null;
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         DrawAttackRange();
 
     }
-    private void DrawAttackRange() {
+    private void DrawAttackRange()
+    {
         Gizmos.color = Color.gray;
 
         Vector2 enemyPos = transform.position;
