@@ -36,6 +36,7 @@ public class CharacterMovement : MonoBehaviour
     private bool bTouchingUpperBounds = false;
     private bool bTouchingLowerBounds = false;
     private bool bTouchingLeftBounds = false;
+    private bool bTouchingRightBounds = false;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -99,6 +100,7 @@ public class CharacterMovement : MonoBehaviour
         if (lives <= 0 )
         {
             // go to lose screen
+            GameMenus.Instance.EnableLoseScreen();
         }
     }
 
@@ -143,6 +145,7 @@ public class CharacterMovement : MonoBehaviour
             if (bTouchingUpperBounds && controls.VerticalMove > 0) controls.VerticalMove = 0;
             if (bTouchingLowerBounds && controls.VerticalMove < 0) controls.VerticalMove = 0;
             if (bTouchingLeftBounds && controls.HorizontalMove < 0) controls.HorizontalMove = 0;
+            if (bTouchingRightBounds && controls.HorizontalMove > 0) controls.HorizontalMove = 0;
 
             if (jump)
             {
@@ -293,6 +296,9 @@ public class CharacterMovement : MonoBehaviour
         if (collision.CompareTag("LeftBounds")) {
             bTouchingLeftBounds = true;
         }
+        else if (collision.CompareTag("RightBounds")) {
+            bTouchingRightBounds = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -308,6 +314,9 @@ public class CharacterMovement : MonoBehaviour
 
         if (collision.CompareTag("LeftBounds")) {
             bTouchingLeftBounds = false;
+        }
+        else if (collision.CompareTag("RightBounds")) {
+            bTouchingRightBounds = false;
         }
     }
 

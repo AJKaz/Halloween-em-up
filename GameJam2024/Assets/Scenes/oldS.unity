@@ -1339,6 +1339,9 @@ MonoBehaviour:
   - {fileID: 888073262}
   playerAnimator: {fileID: 2032919538}
   enemyManager: {fileID: 0}
+  candyStolenText: {fileID: 0}
+  healthText: {fileID: 0}
+  livesText: {fileID: 0}
   score: 0
 --- !u!4 &1983118590
 Transform:
@@ -1388,6 +1391,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 1199717755}
+  loseScreen: {fileID: 0}
+  candyStolenText: {fileID: 0}
+  panelsToDisable: []
 --- !u!95 &2032919538 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2672496625003759580, guid: 0098562d222fa1a468a44610779f16f8, type: 3}

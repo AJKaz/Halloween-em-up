@@ -1,14 +1,27 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameMenus : MonoBehaviour {
 
     [SerializeField] private GameObject pauseMenu;
-    
+    [SerializeField] private GameObject loseScreen;
+
+    [SerializeField] private TMP_Text candyStolenText;
+
+    [SerializeField] private Transform[] panelsToDisable;
+
+    public static GameMenus Instance;
+
     public static bool bGamePaused;
-    
+
+    private void Awake() {
+        Instance = this;
+    }
+
     private void Start() {
         pauseMenu.SetActive(false);
+        loseScreen.SetActive(false);
     }
 
     private void Update() {
@@ -42,6 +55,22 @@ public class GameMenus : MonoBehaviour {
 
     public void Quit() {
         Application.Quit();
+    }
+
+    public void EnableLoseScreen() {
+        Time.timeScale = 0f;
+        
+        foreach (Transform t in panelsToDisable) {
+            t.gameObject.SetActive(false);
+        }
+
+        float score = GameManager.Instance.score;
+        if (score < 0) score = 0;
+        if (score > 99) score = 99;
+        candyStolenText.text = score.ToString();
+
+        bGamePaused = true;
+        loseScreen.SetActive(true);
     }
 
 }

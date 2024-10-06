@@ -27,10 +27,9 @@ public class EnemyManager : MonoBehaviour {
     private IEnumerator SpawnRandomEnemiesNearby(int numToSpawn) {
         for (int i = 0; i < numToSpawn; i++) {
             Enemy enemyToSpawn = enemyTypes[Random.Range(0, enemyTypes.Length)];
-            // 0, 1, 2, 3
-            // 75% chance to spawn forward
+            // 50/50 spawn left/right
             Vector2 spawnLocation;
-            spawnLocation.x = Random.Range(0, 4) > 2 ? GameManager.Instance.player.transform.position.x - hSpawnOffset : GameManager.Instance.player.transform.position.x + hSpawnOffset;
+            spawnLocation.x = Random.Range(0, 2) > 0 ? GameManager.Instance.player.transform.position.x - hSpawnOffset : GameManager.Instance.player.transform.position.x + hSpawnOffset;
             spawnLocation.y = Random.Range(minYSpawn, maxYSpawn);
 
             Enemy newEnemy = Instantiate(enemyToSpawn, spawnLocation, Quaternion.identity, parentTransform);
