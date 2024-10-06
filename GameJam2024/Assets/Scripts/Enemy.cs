@@ -42,6 +42,8 @@ public class Enemy : MonoBehaviour
 
     private Coroutine damageFlashCoroutine = null;
 
+    private bool bDead = false;
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,6 +52,9 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (bDead) {
+            return;
+        }
         UpdateFSM();
 
     }
@@ -106,14 +111,33 @@ public class Enemy : MonoBehaviour
         damageFlashCoroutine = StartCoroutine(FlashTint(damageFlashTime, Color.red));
 
         health -= damage;
-        if (health <= 0)
-        {
-            spriteRenderer.color = Color.black;
+        if (health <= 0) {
+            bDead = true;
+            StartCoroutine(DeathCoroutine());
         }
     }
 
-    bool ShouldPathToPlayer()
-    {
+    IEnumerator DeathCoroutine() {
+        for (int i = 0; i < 3; i++) {
+            spriteRenderer.color = Color.clear;
+            yield return new WaitForSeconds(0.45f);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(0.45f);
+        }
+        for (int i = 0; i < 3; i++) {
+            spriteRenderer.color = Color.clear;
+            yield return new WaitForSeconds(0.25f);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(0.25f);
+        }
+       
+        spriteRenderer.color = Color.clear;
+
+        GameManager.Instance.enemies.Remove(this);
+        Destroy(gameObject);
+    }
+
+    bool ShouldPathToPlayer() {
         // TODO: Define path to parameters
 
         return bCanPath && health > 0f;

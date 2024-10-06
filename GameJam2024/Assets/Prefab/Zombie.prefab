@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51c44f47d7107494fab8fdca1937a623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 283.2
+  health: 125
   hSpeed: 4
   vSpeed: 2
   vPriority: 10

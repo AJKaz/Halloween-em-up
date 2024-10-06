@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
@@ -34,6 +33,7 @@ public class CharacterMovement : MonoBehaviour
 
     private bool bTouchingUpperBounds = false;
     private bool bTouchingLowerBounds = false;
+    private bool bTouchingLeftBounds = false;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -47,6 +47,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float hOffset = 0.5f;
     private StateMachine meleeStateMachine;
 
+    public float health = 100f;
     public bool grounded { get { return onBase; } }
 
 
@@ -97,6 +98,7 @@ public class CharacterMovement : MonoBehaviour
 
             if (bTouchingUpperBounds && controls.VerticalMove > 0) controls.VerticalMove = 0;
             if (bTouchingLowerBounds && controls.VerticalMove < 0) controls.VerticalMove = 0;
+            if (bTouchingLeftBounds && controls.HorizontalMove < 0) controls.HorizontalMove = 0;
 
             if (jump)
             {
@@ -251,6 +253,10 @@ public class CharacterMovement : MonoBehaviour
         {
             bTouchingLowerBounds = true;
         }
+
+        if (collision.CompareTag("LeftBounds")) {
+            bTouchingLeftBounds = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -262,6 +268,10 @@ public class CharacterMovement : MonoBehaviour
         else if (collision.CompareTag("LowerBounds"))
         {
             bTouchingLowerBounds = false;
+        }
+
+        if (collision.CompareTag("LeftBounds")) {
+            bTouchingLeftBounds = false;
         }
     }
 

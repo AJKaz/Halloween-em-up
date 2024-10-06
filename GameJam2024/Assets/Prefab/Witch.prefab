@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51c44f47d7107494fab8fdca1937a623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 283.2
+  health: 110
   hSpeed: 4
   vSpeed: 2
   vPriority: 10
@@ -114,7 +114,6 @@ MonoBehaviour:
   vAttackOffset: 0.21
   verticalPathingOffset: 0.15
   animator: {fileID: 1401523202873023337}
-  heightOffset: 5
   enemyName: Red Enemy
 --- !u!50 &274192259000859687
 Rigidbody2D:
