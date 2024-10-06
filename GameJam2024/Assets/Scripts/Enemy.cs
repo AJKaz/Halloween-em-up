@@ -1,6 +1,4 @@
-using System.Buffers.Text;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -13,21 +11,30 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float hSpeed = 8f;
     [SerializeField] private float vSpeed = 6f;
     [SerializeField] private float vPriority = 1.25f;
-    [SerializeField] private float runAwaySpeedMultiplier = 1.5f;
     [SerializeField] private float hAttackRange = 1.25f;
     [SerializeField] private float vAttackRange = 0.25f;
+    [SerializeField] float movementSmooth = 0.005f;
+
+    [Header("Combat")]
+    [SerializeField] private float attackDuration = 0.35f;
+    [SerializeField] private float damageFlashTime = 0.35f;
 
 
     private Vector3 velocity = Vector3.zero;
-    [SerializeField] float movementSmooth = 0.005f;
 
+    [Header("Misc")]
+    /* OPTIONAL: Used for debugging */
     public string enemyName = "No Name";
 
+    private bool bFacingRight = true;
     private Rigidbody2D rb;
-    private bool facingRight = true;
+    private SpriteRenderer spriteRenderer;
+
+    private Coroutine damageFlashCoroutine = null;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -48,17 +55,14 @@ public class Enemy : MonoBehaviour
         }
         else if (ShouldPathToPlayer()) {
             // Go Towards Player
-            PathToPosition(GameManager.Instance.player.transform.position);
-        }
-        else if (ShouldRun()) {
-            RunAway();
+            //PathToPosition(GameManager.Instance.player.transform.position);
         }
 
     }
 
     private void Move(float hMove, float vMove) {
-        if (hMove < 0 && facingRight) Flip();
-        else if (hMove > 0 && !facingRight) Flip();
+        if (hMove < 0 && bFacingRight) Flip();
+        else if (hMove > 0 && !bFacingRight) Flip();
 
         Vector3 targetVelocity = new Vector2(hMove * hSpeed, vMove * vSpeed);
 
@@ -67,8 +71,20 @@ public class Enemy : MonoBehaviour
     }
 
     private void Flip() {
-        facingRight = !facingRight;
+        bFacingRight = !bFacingRight;
         transform.Rotate(0, 180, 0);
+    }
+
+    public void TakeDamage(float damage) {
+        if (damageFlashCoroutine != null) {
+            StopCoroutine(damageFlashCoroutine);
+        }
+        damageFlashCoroutine = StartCoroutine(FlashTint(damageFlashTime, Color.red));
+        
+        health -= damage;
+        if (health <= 0) {
+            spriteRenderer.color = Color.black;
+        }
     }
 
     bool ShouldPathToPlayer() {
@@ -77,12 +93,10 @@ public class Enemy : MonoBehaviour
         return health > 0f;
     }
 
-    bool ShouldRun() {
-        return health <= 0f;
-    }
-
     void StartAttack() {
         // TODO: Attack
+
+        //StartCoroutine(FlashTint(0.25f, Color.blue));
     }
 
     void PathToPosition(Vector3 position) {
@@ -101,17 +115,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void RunAway() {
-        // TODO: Make direciton dynamic
-        // IF on left half of screen, run left
-        // IF on right half of screen, run right
-        // Can have some verticality to this to make it unique, but make it slight
-        // Note: It's okay if this is run every frame, technically worse for performance but ok for this scale
-        Vector2 direction = new Vector2(-1, 0);
-        direction.Normalize();
-       //Move(direction.x, direction.y, false);
-    }
-
     bool InAttackRange() {
         Vector3 distance = GameManager.Instance.player.transform.position - transform.position;
         return Mathf.Abs(distance.x) <= hAttackRange && Mathf.Abs(distance.y) <= vAttackRange;
@@ -119,5 +122,15 @@ public class Enemy : MonoBehaviour
 
     void OnStunned() {
         bAttacking = false;
+    }
+
+    private IEnumerator FlashTint(float time, Color color) {
+        spriteRenderer.color = color;
+
+        yield return new WaitForSeconds(time);
+
+        spriteRenderer.color = Color.white;
+
+        damageFlashCoroutine = null;
     }
 }

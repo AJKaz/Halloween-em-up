@@ -230,7 +230,7 @@ MonoBehaviour:
   airVSpeed: 1.5
   movementSmooth: 0.005
   charRB: {fileID: 8301960327517984983}
-  jumpVal: 6
+  jumpVal: 9
   possibleJumps: 1
   currentJumps: 0
   onBase: 0
@@ -239,12 +239,12 @@ MonoBehaviour:
   detectLayer:
     serializedVersion: 2
     m_Bits: 512
-  jumpingGravityScale: 1
-  fallingGravityScale: 2
-  hAttackRange: 1.5
-  vAttackRange: 0.2
-  vOffset: -0.18
-  hOffset: -0.3
+  jumpingGravityScale: 2
+  fallingGravityScale: 3
+  hAttackRange: 2.28
+  vAttackRange: 0.53
+  vOffset: 0.12
+  hOffset: -0.39
 --- !u!114 &6710592902542855869
 MonoBehaviour:
   m_ObjectHideFlags: 0

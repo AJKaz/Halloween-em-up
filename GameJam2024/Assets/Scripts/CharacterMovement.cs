@@ -65,6 +65,8 @@ public class CharacterMovement : MonoBehaviour {
         if (controls.AttackState) {
             Attack();
         }
+
+        GameManager.Instance.playerAnimator.SetBool("InAir", !onBase);
     }
 
     private void FixedUpdate() {
@@ -141,6 +143,7 @@ public class CharacterMovement : MonoBehaviour {
         List<Enemy> enemiesToHit = GetEnemiesInRange();
         foreach (Enemy enemy in enemiesToHit) {
             Debug.Log("Hit Enemy " + enemy.enemyName);
+            enemy.TakeDamage(15);
         }
 
         if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
