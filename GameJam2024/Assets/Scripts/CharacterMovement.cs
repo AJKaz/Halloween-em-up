@@ -94,10 +94,18 @@ public class CharacterMovement : MonoBehaviour {
                 vSpeed = airVSpeed;
             }
 
+            
+
             Vector3 targetVelocity = new Vector2(controls.HorizontalMove * hSpeed, controls.VerticalMove * vSpeed);
 
             Vector2 velocity = Vector3.SmoothDamp(baseRB.velocity, targetVelocity, ref this.velocity, movementSmooth);
             baseRB.velocity = velocity;
+
+            if (baseRB.velocity.x > 0 && baseRB.velocity.x < 0)
+            {
+                //walking
+                GameManager.Instance.playerAnimator.SetTrigger("walking");
+            }
 
             if (doesCharacterJump) {
                 if (onBase) {

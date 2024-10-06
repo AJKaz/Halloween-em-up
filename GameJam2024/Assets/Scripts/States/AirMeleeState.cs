@@ -8,7 +8,7 @@ public class AirMeleeState : MeleeBaseState
     {
         base.OnEnter(sMachine);
 
-        attackIndex = 1;
+        attackIndex = 5;
         duration = 0.5f;
         animator.SetTrigger("Attack" + attackIndex);
         Debug.Log("Player Attack " + attackIndex + " fired");
@@ -17,5 +17,11 @@ public class AirMeleeState : MeleeBaseState
     public override void OnUpdate()
     {
         base.OnUpdate();
+        if (fixedTime >= duration)
+        {
+           
+            stateMachine.SetNextStateToMain();
+            
+        }
     }
 }
