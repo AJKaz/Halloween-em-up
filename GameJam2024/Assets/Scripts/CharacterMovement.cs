@@ -67,6 +67,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenus.bGamePaused) return;
+
         controls = input.GetInput();
         if (controls.JumpState && currentJumps < possibleJumps)
         {
@@ -89,6 +91,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (GameMenus.bGamePaused) return;
+
         Move();
 
         if (lives <= 0 )
