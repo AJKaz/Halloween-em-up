@@ -1338,6 +1338,8 @@ MonoBehaviour:
   enemies:
   - {fileID: 888073262}
   playerAnimator: {fileID: 2032919538}
+  enemyManager: {fileID: 0}
+  score: 0
 --- !u!4 &1983118590
 Transform:
   m_ObjectHideFlags: 0
@@ -1389,6 +1391,11 @@ MonoBehaviour:
 --- !u!95 &2032919538 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2672496625003759580, guid: 0098562d222fa1a468a44610779f16f8, type: 3}
+  m_PrefabInstance: {fileID: 6198252742643610014}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2032919541 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8145109651112639117, guid: 0098562d222fa1a468a44610779f16f8, type: 3}
   m_PrefabInstance: {fileID: 6198252742643610014}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2058668437
@@ -1709,6 +1716,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7868118596065756605, guid: 0098562d222fa1a468a44610779f16f8, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 2032919541}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
