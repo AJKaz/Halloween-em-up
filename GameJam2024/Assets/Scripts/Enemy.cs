@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -11,15 +12,18 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float hSpeed = 8f;
     [SerializeField] private float vSpeed = 6f;
     [SerializeField] private float vPriority = 1.25f;
-    [SerializeField] private float hAttackRange = 1.25f;
-    [SerializeField] private float vAttackRange = 0.25f;
     [SerializeField] float movementSmooth = 0.005f;
     /* Whether or not enemy can move */
     [SerializeField] private bool bCanPath = true;
 
     [Header("Combat")]
-    [SerializeField] private float attackDuration = 0.35f;
+    [SerializeField] private float attackDuration = 0.8f;
     [SerializeField] private float damageFlashTime = 0.35f;
+    [SerializeField] private float hAttackRange = 1.25f;
+    [SerializeField] private float vAttackRange = 0.25f;
+    [SerializeField] private float hAttackOffset = 0f;
+    [SerializeField] private float vAttackOffset = 0f;
+    [SerializeField] private float verticalPathingOffset = 0.15f;
 
 
     private Vector3 velocity = Vector3.zero;
@@ -98,15 +102,25 @@ public class Enemy : MonoBehaviour
     void StartAttack() {
         // TODO: Attack
 
-        //StartCoroutine(FlashTint(0.25f, Color.blue));
+        bAttacking = true;
+        StartCoroutine(TEMP_AttackNumerator());
+    }
+
+    IEnumerator TEMP_AttackNumerator() {
+        spriteRenderer.color = Color.blue;
+        yield return new WaitForSeconds(attackDuration);
+        spriteRenderer.color = Color.white;
+        bAttacking = false;
     }
 
     void PathToPosition(Vector3 position) {
         Vector2 direction = position - transform.position;
         Vector2 distance = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
-        if (distance.x > hAttackRange || distance.y > vAttackRange) {
-            if (distance.x < hAttackRange) direction.x = 0;
-            if (distance.y < vAttackRange) direction.y = 0;
+        float hActualRange = hAttackRange + hAttackOffset;
+        //float vActualRange = vAttackRange;
+        if (distance.x > hActualRange || distance.y > verticalPathingOffset) {
+            if (distance.x < hActualRange) direction.x = 0;
+            if (distance.y < verticalPathingOffset) direction.y = 0;
             else direction.y *= vPriority;
             direction.Normalize();
 
@@ -118,8 +132,25 @@ public class Enemy : MonoBehaviour
     }
 
     bool InAttackRange() {
+        Vector2 playerPosition = GameManager.Instance.player.transform.position;
+
         Vector3 distance = GameManager.Instance.player.transform.position - transform.position;
-        return Mathf.Abs(distance.x) <= hAttackRange && Mathf.Abs(distance.y) <= vAttackRange;
+        distance.x = Mathf.Abs(distance.x);
+        distance.y = Mathf.Abs(distance.y);
+
+        float vDistance = Mathf.Abs(playerPosition.y - (transform.position.y + vAttackOffset));
+        if (vDistance <= vAttackRange) {
+            // Within vertical attack range, now check horizontal attack range
+            float hDistance = playerPosition.x - transform.position.x - (bFacingRight ? hAttackOffset : -hAttackOffset);
+
+            if (bFacingRight && hDistance >= 0 && hDistance <= hAttackRange) {
+                return true;
+            }
+            if (!bFacingRight && hDistance <= 0 && Mathf.Abs(hDistance) <= hAttackRange) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void OnStunned() {
@@ -134,5 +165,17 @@ public class Enemy : MonoBehaviour
         spriteRenderer.color = Color.white;
 
         damageFlashCoroutine = null;
+    }
+
+    private void OnDrawGizmos() {
+        DrawAttackRange();
+
+    }
+    private void DrawAttackRange() {
+        Gizmos.color = Color.gray;
+
+        Vector2 enemyPos = transform.position;
+        Vector2 boxCenter = enemyPos + new Vector2(bFacingRight ? (hAttackRange / 2) + hAttackOffset : -(hAttackRange / 2) - hAttackOffset, vAttackOffset);
+        Gizmos.DrawWireCube(boxCenter, new Vector2(hAttackRange, vAttackRange * 2));
     }
 }

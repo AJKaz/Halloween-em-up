@@ -697,8 +697,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
+      propertyPath: health
+      value: 283.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
       propertyPath: bCanPath
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
+      propertyPath: hAttackRange
+      value: 1.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
+      propertyPath: vAttackRange
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
+      propertyPath: hAttackOffset
+      value: -0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423033484190836814, guid: 9d2ea7f6551182444b6107d2d9721018, type: 3}
+      propertyPath: vAttackOffset
+      value: 0.21
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

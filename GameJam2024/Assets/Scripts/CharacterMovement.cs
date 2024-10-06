@@ -214,9 +214,10 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
-        if (doesCharacterJump) {
+       // Raycast distance gizmo
+        /* if (doesCharacterJump) {
             Gizmos.DrawRay(jumpDetector.transform.position, -Vector3.up * detectionDistance);
-        }
+        }*/
 
         DrawAttackRange();
 
