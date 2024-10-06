@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CharacterMovement : MonoBehaviour {
+public class CharacterMovement : MonoBehaviour
+{
     [SerializeField] private bool canMove = true;
     [Tooltip(("If your character does not jump, ignore all below 'Jumping Character'"))]
     [SerializeField] private bool doesCharacterJump = false;
@@ -49,99 +50,121 @@ public class CharacterMovement : MonoBehaviour {
     public bool grounded { get { return onBase; } }
 
 
-    private void Awake() {
+    private void Awake()
+    {
         input = GetComponent<PlayerInput>();
         vSpeed = groundVSpeed;
 
         meleeStateMachine = GetComponent<StateMachine>();
     }
 
-    private void Update() {
+    private void Update()
+    {
         controls = input.GetInput();
-        if (controls.JumpState && currentJumps < possibleJumps) {
+        if (controls.JumpState && currentJumps < possibleJumps)
+        {
             jump = true;
         }
 
-        if (controls.AttackState) {
+        if (controls.AttackState)
+        {
             Attack();
         }
 
+        //Animation Controller jazz
+        GameManager.Instance.playerAnimator.SetBool("Walking", (baseRB.velocity.magnitude >= 0.4));
         GameManager.Instance.playerAnimator.SetBool("InAir", !onBase);
+        if (!onBase)
+        {
+            GameManager.Instance.playerAnimator.SetBool("Walking", false);
+        }
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         Move();
     }
 
-    private void Move() {
-        if (!onBase && doesCharacterJump) {
+    private void Move()
+    {
+        if (!onBase && doesCharacterJump)
+        {
             DetectBase();
         }
 
-        if (canMove) {
+        if (canMove)
+        {
 
             if (bTouchingUpperBounds && controls.VerticalMove > 0) controls.VerticalMove = 0;
             if (bTouchingLowerBounds && controls.VerticalMove < 0) controls.VerticalMove = 0;
 
-            if (jump) {
+            if (jump)
+            {
                 charRB.velocity = new Vector2(charRB.velocity.x, 0);
                 charRB.AddForce(Vector2.up * jumpVal, ForceMode2D.Impulse);
                 //charRB.velocity = new Vector2(charRB.velocity.x, Mathf.Clamp(charRB.velocity.y, -5, 8));
-                
+                GameManager.Instance.playerAnimator.SetTrigger("Rising");
                 charRB.gravityScale = jumpingGravityScale;
                 jump = false;
                 currentJumps++;
                 onBase = false;
-                
+
                 vSpeed = airVSpeed;
             }
 
-            
+
 
             Vector3 targetVelocity = new Vector2(controls.HorizontalMove * hSpeed, controls.VerticalMove * vSpeed);
 
             Vector2 velocity = Vector3.SmoothDamp(baseRB.velocity, targetVelocity, ref this.velocity, movementSmooth);
             baseRB.velocity = velocity;
 
-            if (baseRB.velocity.x > 0 && baseRB.velocity.x < 0)
-            {
-                //walking
-                GameManager.Instance.playerAnimator.SetTrigger("walking");
-            }
 
-            if (doesCharacterJump) {
-                if (onBase) {
+
+
+
+            if (doesCharacterJump)
+            {
+                if (onBase)
+                {
                     // on base
                     charRB.velocity = velocity;
                     vSpeed = groundVSpeed;
+
+
                 }
-                else {
+                else
+                {
                     // in air
-                    if (charRB.velocity.y < 0) {
+                    if (charRB.velocity.y < 0)
+                    {
                         charRB.gravityScale = fallingGravityScale;
                     }
-
                     charRB.velocity = new Vector2(velocity.x, charRB.velocity.y);
                 }
             }
 
             // rotate if we're facing the wrong way
-            if (controls.HorizontalMove > 0 && !facingRight) {
+            if (controls.HorizontalMove > 0 && !facingRight)
+            {
                 Flip();
             }
-            else if (controls.HorizontalMove < 0 && facingRight) {
+            else if (controls.HorizontalMove < 0 && facingRight)
+            {
                 Flip();
             }
         }
 
-       
+
     }
 
-    public void Attack() {
+    public void Attack()
+    {
         Debug.Log("Attack");
 
         List<Enemy> enemiesToHit = GetEnemiesInRange();
-        foreach (Enemy enemy in enemiesToHit) {
+        foreach (Enemy enemy in enemiesToHit)
+        {
             Debug.Log("Hit Enemy " + enemy.enemyName);
             enemy.TakeDamage(15);
         }
@@ -151,29 +174,34 @@ public class CharacterMovement : MonoBehaviour {
             Debug.Log("Attack");
             meleeStateMachine.SetNextState(new MeleeEntryState());
         }
-    
+
 
     }
 
-    public List<Enemy> GetEnemiesInRange() {
+    public List<Enemy> GetEnemiesInRange()
+    {
         // WARNING: ASSUMES PLAYER AND ENEMIES ARE GROUNDED
 
         List<Enemy> enemiesInRange = new List<Enemy>();
 
         Vector2 playerPosition = transform.position;
-        
-        foreach (Enemy enemy in GameManager.Instance.enemies) {
+
+        foreach (Enemy enemy in GameManager.Instance.enemies)
+        {
             Vector2 enemyPosition = enemy.transform.position;
 
             float vDistance = Mathf.Abs(enemyPosition.y - (playerPosition.y + vOffset));
-            if (vDistance <= vAttackRange) {
+            if (vDistance <= vAttackRange)
+            {
                 // Within vertical attack range, now check horizontal attack range
                 float hDistance = enemyPosition.x - playerPosition.x - (facingRight ? hOffset : -hOffset);
-                
-                if (facingRight && hDistance >= 0 && hDistance <= hAttackRange) {
+
+                if (facingRight && hDistance >= 0 && hDistance <= hAttackRange)
+                {
                     enemiesInRange.Add(enemy);
                 }
-                else if (!facingRight && hDistance <= 0 && Mathf.Abs(hDistance)  <= hAttackRange) {
+                else if (!facingRight && hDistance <= 0 && Mathf.Abs(hDistance) <= hAttackRange)
+                {
                     enemiesInRange.Add(enemy);
                 }
             }
@@ -182,48 +210,75 @@ public class CharacterMovement : MonoBehaviour {
         return enemiesInRange;
     }
 
-    private void Flip() {
+    private void Flip()
+    {
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
 
-    private void DetectBase() {
+    private void DetectBase()
+    {
+        if (!onBase && charRB.velocity.y <= 0)
+        {
+            RaycastHit2D fall = Physics2D.Raycast(jumpDetector.position, -Vector2.up, .05f, detectLayer);
+            if (fall.collider != null)
+            {
+                GameManager.Instance.playerAnimator.SetTrigger("Falling");
+            }
+        }
+
         RaycastHit2D hit = Physics2D.Raycast(jumpDetector.position, -Vector2.up, detectionDistance, detectLayer);
-        if (hit.collider != null) {
+        if (hit.collider != null)
+        {
+
             onBase = true;
             currentJumps = 0;
         }
+
+
+
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("UpperBounds")) {
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("UpperBounds"))
+        {
             bTouchingUpperBounds = true;
         }
-        else if (collision.CompareTag("LowerBounds")) {
+        else if (collision.CompareTag("LowerBounds"))
+        {
             bTouchingLowerBounds = true;
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.CompareTag("UpperBounds")) {
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("UpperBounds"))
+        {
             bTouchingUpperBounds = false;
         }
-        else if (collision.CompareTag("LowerBounds")) {
+        else if (collision.CompareTag("LowerBounds"))
+        {
             bTouchingLowerBounds = false;
         }
     }
 
-    private void OnDrawGizmos() {
-       // Raycast distance gizmo
-        /* if (doesCharacterJump) {
+    private void OnDrawGizmos()
+    {
+        if (doesCharacterJump)
+        {
             Gizmos.DrawRay(jumpDetector.transform.position, -Vector3.up * detectionDistance);
-        }*/
+            Gizmos.DrawRay(jumpDetector.transform.position, -Vector3.up * .25f);
+        }
 
         DrawAttackRange();
 
     }
 
-    private void DrawAttackRange() {
+    private void DrawAttackRange()
+    {
         Gizmos.color = Color.cyan;
 
         Vector2 playerPos = transform.position;
@@ -232,7 +287,8 @@ public class CharacterMovement : MonoBehaviour {
         Gizmos.DrawWireCube(boxCenter, new Vector2(hAttackRange, vAttackRange * 2));
     }
 
-    private void DrawBoxCollider(BoxCollider2D collider, Color color) {
+    private void DrawBoxCollider(BoxCollider2D collider, Color color)
+    {
         Gizmos.color = color;
 
         Vector2 size = collider.size;
