@@ -43,6 +43,7 @@ public class CharacterMovement : MonoBehaviour
     Controls controls = new Controls();
 
     [Header("Combat State")]
+    [SerializeField] private float attackDamage = 15f;
     [SerializeField] private float hAttackRange = 1.5f;
     [SerializeField] private float vAttackRange = 0.5f;
     [SerializeField] private float vOffset = 0.5f;
@@ -164,10 +165,6 @@ public class CharacterMovement : MonoBehaviour
             Vector2 velocity = Vector3.SmoothDamp(baseRB.velocity, targetVelocity, ref this.velocity, movementSmooth);
             baseRB.velocity = velocity;
 
-
-
-
-
             if (doesCharacterJump)
             {
                 if (onBase)
@@ -199,25 +196,23 @@ public class CharacterMovement : MonoBehaviour
                 Flip();
             }
         }
-
-
     }
 
     public void Attack()
     {
         Debug.Log("Attack");
 
-        List<Enemy> enemiesToHit = GetEnemiesInRange();
-        foreach (Enemy enemy in enemiesToHit)
-        {
-            Debug.Log("Hit Enemy " + enemy.enemyName);
-            enemy.TakeDamage(15);
-        }
-
         if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
         {
-            Debug.Log("Attack");
             meleeStateMachine.SetNextState(new MeleeEntryState());
+        }
+    }
+
+    public void DamageEnemyTrigger() {
+        List<Enemy> enemiesToHit = GetEnemiesInRange();
+        foreach (Enemy enemy in enemiesToHit) {
+            Debug.Log("Hit Enemy " + enemy.enemyName);
+            enemy.TakeDamage(attackDamage);
         }
     }
 

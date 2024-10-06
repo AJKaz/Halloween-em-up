@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -17,6 +19,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool bCanPath = true;
 
     [Header("Combat")]
+    [SerializeField] private float attackDamage = 15f;
     [SerializeField] private float attackDuration = 0.8f;
     [SerializeField] private float damageFlashTime = 0.35f;
     [SerializeField] private float hAttackRange = 1.25f;
@@ -27,8 +30,6 @@ public class Enemy : MonoBehaviour
 
     [Header("Animation/States")]
     [SerializeField] private Animator animator;
-    private int state;
-
 
     private Vector3 velocity = Vector3.zero;
 
@@ -41,9 +42,12 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private Coroutine damageFlashCoroutine = null;
+    private Coroutine stunnedCoroutine = null;
 
     private bool bDead = false;
-    
+
+    private bool bStunned = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -61,14 +65,7 @@ public class Enemy : MonoBehaviour
 
     void UpdateFSM()
     {
-        if (bAttacking)
-        {
-            // Continue to do the attack
-            if (animator)
-            {
-                animator.SetTrigger("Attack1");
-            }
-
+        if (bStunned || bAttacking) {
             return;
         }
 
@@ -105,6 +102,11 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (stunnedCoroutine != null) {
+            StopCoroutine(stunnedCoroutine);
+        }
+        stunnedCoroutine = StartCoroutine(StunCoroutine());
+
         if (damageFlashCoroutine != null)
         {
             StopCoroutine(damageFlashCoroutine);
@@ -144,19 +146,24 @@ public class Enemy : MonoBehaviour
         return bCanPath && health > 0f;
     }
 
+
     void StartAttack()
     {
-        GameManager.Instance.player.TakeDamage(15);
-
-        bAttacking = true;
-        StartCoroutine(TEMP_AttackNumerator());
+        if (animator) {
+            animator.SetTrigger("Attack1");
+        }
+        StartCoroutine(AttackCoroutine());
     }
 
-    IEnumerator TEMP_AttackNumerator()
+    IEnumerator AttackCoroutine()
     {
-        spriteRenderer.color = Color.blue;
-        yield return new WaitForSeconds(attackDuration);
-        spriteRenderer.color = Color.white;
+        bAttacking = true;
+
+        yield return new WaitForSeconds(0.15f);
+
+        GameManager.Instance.player.TakeDamage(attackDamage);
+
+        yield return new WaitForSeconds(attackDuration - 0.15f);
         bAttacking = false;
     }
 
@@ -207,15 +214,20 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-    void OnStunned()
-    {
+    private IEnumerator StunCoroutine() {
+        bStunned = true;
         bAttacking = false;
+
+        yield return new WaitForSeconds(damageFlashTime);
+
+        bStunned = false;
+        stunnedCoroutine = null;
     }
 
     private IEnumerator FlashTint(float time, Color color)
     {
         spriteRenderer.color = color;
-
+        
         yield return new WaitForSeconds(time);
 
         spriteRenderer.color = Color.white;

@@ -241,10 +241,13 @@ MonoBehaviour:
     m_Bits: 512
   jumpingGravityScale: 2
   fallingGravityScale: 3
-  hAttackRange: 2.28
-  vAttackRange: 0.53
+  hAttackRange: 3
+  vAttackRange: 0.8
   vOffset: 0.12
-  hOffset: -0.39
+  hOffset: -0.84
+  spriteRenderer: {fileID: 8145109651112639117}
+  health: 100
+  lives: 3
 --- !u!114 &6710592902542855869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,6 +305,7 @@ GameObject:
   - component: {fileID: 5550043795857809964}
   - component: {fileID: 8301960327517984983}
   - component: {fileID: 2672496625003759580}
+  - component: {fileID: 674422621403652784}
   m_Layer: 0
   m_Name: MainCharacterSprite
   m_TagString: Untagged
@@ -371,7 +375,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.11, y: 0.22}
+  m_Size: {x: 7, y: 6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -413,8 +417,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.11, y: 0.22}
-    newSize: {x: 0.11, y: 0.22}
+    oldSize: {x: 7, y: 6}
+    newSize: {x: 7, y: 6}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -470,3 +474,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &674422621403652784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6818732773474956755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d22165b8a40fce64db18e7bad87fc4ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

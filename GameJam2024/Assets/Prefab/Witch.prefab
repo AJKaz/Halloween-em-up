@@ -106,7 +106,8 @@ MonoBehaviour:
   vPriority: 10
   movementSmooth: 0.005
   bCanPath: 1
-  attackDuration: 0.8
+  attackDamage: 20
+  attackDuration: 1.25
   damageFlashTime: 0.35
   hAttackRange: 6.86
   vAttackRange: 0.4
