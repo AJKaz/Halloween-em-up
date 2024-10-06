@@ -16,7 +16,6 @@ public class Character : MonoBehaviour
     [Range(0, 1.0f)]
     [SerializeField] protected Rigidbody2D trueRB;
     [SerializeField] private float clampValue = 5;
-    [SerializeField] private float offset = 1.05f;
     private bool faceRight = true;
 
     [Header("Jump")]
@@ -32,7 +31,6 @@ public class Character : MonoBehaviour
     private StateMachine meleeStateMachine;
     [SerializeField] private Collider hurtbox;
     [SerializeField] private Collider hitbox;
-    [SerializeField] private Animator ani;
     public void Awake()
     {
         meleeStateMachine = GetComponent<StateMachine>();
