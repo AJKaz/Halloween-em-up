@@ -1,7 +1,7 @@
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,10 +9,26 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private float health = 100f;
 
+    [Header("Movement")]
+    [SerializeField] private float hSpeed = 8f;
+    [SerializeField] private float vSpeed = 6f;
+    [SerializeField] private float vPriority = 1.25f;
     [SerializeField] private float runAwaySpeedMultiplier = 1.5f;
-    [SerializeField] private float attackRange = 1.25f;
+    [SerializeField] private float hAttackRange = 1.25f;
+    [SerializeField] private float vAttackRange = 0.25f;
+
+
+    private Vector3 velocity = Vector3.zero;
+    [SerializeField] float movementSmooth = 0.005f;
 
     public string enemyName = "No Name";
+
+    private Rigidbody2D rb;
+    private bool facingRight = true;
+
+    private void Awake() {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     void Update()
     {
@@ -27,8 +43,7 @@ public class Enemy : MonoBehaviour
         }
 
         if (InAttackRange()) {
-           // ZeroAllVelocity();
-
+            rb.velocity = Vector3.zero;
             StartAttack();
         }
         else if (ShouldPathToPlayer()) {
@@ -39,6 +54,21 @@ public class Enemy : MonoBehaviour
             RunAway();
         }
 
+    }
+
+    private void Move(float hMove, float vMove) {
+        if (hMove < 0 && facingRight) Flip();
+        else if (hMove > 0 && !facingRight) Flip();
+
+        Vector3 targetVelocity = new Vector2(hMove * hSpeed, vMove * vSpeed);
+
+        Vector2 velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref this.velocity, movementSmooth);
+        rb.velocity = velocity;
+    }
+
+    private void Flip() {
+        facingRight = !facingRight;
+        transform.Rotate(0, 180, 0);
     }
 
     bool ShouldPathToPlayer() {
@@ -57,13 +87,17 @@ public class Enemy : MonoBehaviour
 
     void PathToPosition(Vector3 position) {
         Vector2 direction = position - transform.position;
-        if (direction.magnitude > attackRange) {
+        Vector2 distance = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+        if (distance.x > hAttackRange || distance.y > vAttackRange) {
+            if (distance.x < hAttackRange) direction.x = 0;
+            if (distance.y < vAttackRange) direction.y = 0;
+            else direction.y *= vPriority;
             direction.Normalize();
-            
-            //Move(direction.x, direction.y, false);
+
+            Move(direction.x, direction.y);
         }
         else {
-          // ZeroAllVelocity(); 
+            rb.velocity = Vector3.zero;
         }
     }
 
@@ -79,7 +113,8 @@ public class Enemy : MonoBehaviour
     }
 
     bool InAttackRange() {
-        return ((GameManager.Instance.player.transform.position - transform.position).magnitude < attackRange);
+        Vector3 distance = GameManager.Instance.player.transform.position - transform.position;
+        return Mathf.Abs(distance.x) <= hAttackRange && Mathf.Abs(distance.y) <= vAttackRange;
     }
 
     void OnStunned() {
