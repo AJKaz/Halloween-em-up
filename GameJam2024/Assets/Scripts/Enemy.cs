@@ -81,6 +81,7 @@ public class Enemy : MonoBehaviour
         {
             // Go Towards Player
             PathToPosition(GameManager.Instance.player.transform.position);
+
         }
 
     }
@@ -132,7 +133,7 @@ public class Enemy : MonoBehaviour
         }
        
         spriteRenderer.color = Color.clear;
-
+        GameManager.Instance.score++;
         GameManager.Instance.enemies.Remove(this);
         Destroy(gameObject);
     }
@@ -145,7 +146,7 @@ public class Enemy : MonoBehaviour
 
     void StartAttack()
     {
-        // TODO: Attack
+        GameManager.Instance.player.TakeDamage(15);
 
         bAttacking = true;
         StartCoroutine(TEMP_AttackNumerator());

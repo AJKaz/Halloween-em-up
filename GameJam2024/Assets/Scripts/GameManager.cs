@@ -12,8 +12,20 @@ public class GameManager : MonoBehaviour
 
     public Animator playerAnimator;
 
+    [SerializeField] private EnemyManager enemyManager;
+
+    public float score = 0;
+
     void Awake()
     {
         Instance = this;
+    }
+
+    private void Update()
+    {
+        if (enemyManager != null)
+        {
+
+        }
     }
 }

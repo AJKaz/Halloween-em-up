@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
@@ -46,8 +48,12 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float vOffset = 0.5f;
     [SerializeField] private float hOffset = 0.5f;
     private StateMachine meleeStateMachine;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    private Coroutine damageCoroutine;
+    private float flashTime = .35f;
 
     public float health = 100f;
+    public int lives = 3;
     public bool grounded { get { return onBase; } }
 
 
@@ -84,6 +90,39 @@ public class CharacterMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+
+        if (lives <= 0 )
+        {
+            // go to lose screen
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (damageCoroutine != null)
+        {
+            StopCoroutine(damageCoroutine);
+        }
+        damageCoroutine = StartCoroutine(FlashTint(flashTime, Color.red));
+
+        health -= damage;
+        if (health <= 0)
+        {
+            lives--;
+            GameManager.Instance.score -= 3;
+            health = 500;
+        }
+    }
+
+    private IEnumerator FlashTint(float time, Color color)
+    {
+        spriteRenderer.color = color;
+
+        yield return new WaitForSeconds(time);
+
+        spriteRenderer.color = Color.white;
+
+        damageCoroutine = null;
     }
 
     private void Move()
@@ -176,8 +215,6 @@ public class CharacterMovement : MonoBehaviour
             Debug.Log("Attack");
             meleeStateMachine.SetNextState(new MeleeEntryState());
         }
-
-
     }
 
     public List<Enemy> GetEnemiesInRange()
