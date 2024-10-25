@@ -110,8 +110,7 @@ public class CharacterMovement : MonoBehaviour
         {
             StopCoroutine(damageCoroutine);
         }
-        damageCoroutine = StartCoroutine(FlashTint(flashTime, Color.red));
-
+        
         health -= damage;
         if (health <= 0)
         {
@@ -119,6 +118,7 @@ public class CharacterMovement : MonoBehaviour
             GameManager.Instance.score -= 3;
             health = 500;
         }
+        damageCoroutine = StartCoroutine(FlashTint(flashTime, Color.red));
     }
 
     private IEnumerator FlashTint(float time, Color color)
@@ -126,9 +126,17 @@ public class CharacterMovement : MonoBehaviour
         spriteRenderer.color = color;
 
         yield return new WaitForSeconds(time);
+        yield return Invul(3f);
 
         spriteRenderer.color = Color.white;
+    }
 
+    private IEnumerator Invul(float time)
+    {
+        spriteRenderer.color = new Color(1, 1, 1, .5f);
+
+        yield return new WaitForSeconds(time);
+        spriteRenderer.color = Color.white;
         damageCoroutine = null;
     }
 
@@ -216,6 +224,7 @@ public class CharacterMovement : MonoBehaviour
         foreach (Enemy enemy in enemiesToHit) {
             Debug.Log("Hit Enemy " + enemy.enemyName);
             enemy.TakeDamage(attackDamage);
+            //Hit stop here??
         }
     }
 
