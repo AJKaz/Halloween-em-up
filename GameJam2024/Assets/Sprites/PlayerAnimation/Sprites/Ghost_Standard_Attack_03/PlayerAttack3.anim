@@ -153,6 +153,6 @@ AnimationClip:
     functionName: DamageEnemyTrigger
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
+    floatParameter: 0.05
     intParameter: 0
     messageOptions: 0

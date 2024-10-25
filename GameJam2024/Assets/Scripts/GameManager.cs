@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text livesText;
 
     public float score = 0;
+    public float enemiesKilled = 0;
+
 
     void Awake()
     {

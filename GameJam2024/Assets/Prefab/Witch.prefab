@@ -108,7 +108,7 @@ MonoBehaviour:
   bCanPath: 1
   attackDamage: 20
   attackDuration: 3
-  damageFlashTime: 0.35
+  damageFlashTime: 1
   hAttackRange: 6.86
   vAttackRange: 0.4
   hAttackOffset: -0.33

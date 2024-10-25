@@ -136,6 +136,7 @@ public class Enemy : MonoBehaviour
        
         spriteRenderer.color = Color.clear;
         GameManager.Instance.score++;
+        GameManager.Instance.enemiesKilled++;
         GameManager.Instance.enemies.Remove(this);
         Destroy(gameObject);
     }

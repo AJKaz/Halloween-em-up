@@ -107,8 +107,8 @@ MonoBehaviour:
   movementSmooth: 0.005
   bCanPath: 1
   attackDamage: 15
-  attackDuration: 1.5
-  damageFlashTime: 0.35
+  attackDuration: 3
+  damageFlashTime: 1
   hAttackRange: 1.93
   vAttackRange: 0.4
   hAttackOffset: -0.4

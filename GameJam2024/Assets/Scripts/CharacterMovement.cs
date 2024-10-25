@@ -97,38 +97,40 @@ public class CharacterMovement : MonoBehaviour
 
         Move();
 
-        if (lives <= 0 )
+        if (lives <= 0)
         {
             // go to lose screen
             GameMenus.Instance.EnableLoseScreen();
         }
     }
-
+    private bool invul = false;
     public void TakeDamage(float damage)
     {
-        if (damageCoroutine != null)
+        if (invul == true)
         {
-            StopCoroutine(damageCoroutine);
+            Debug.Log("Missed");
+            return;
         }
-        
+
         health -= damage;
         if (health <= 0)
         {
             lives--;
-            GameManager.Instance.score -= 3;
             health = 500;
         }
+        
         damageCoroutine = StartCoroutine(FlashTint(flashTime, Color.red));
     }
 
     private IEnumerator FlashTint(float time, Color color)
     {
+        //Hit stop
+        FindObjectOfType<HitStop>().TimeStop(0.1f);
+        invul = true;
         spriteRenderer.color = color;
 
         yield return new WaitForSeconds(time);
-        yield return Invul(3f);
-
-        spriteRenderer.color = Color.white;
+        damageCoroutine = StartCoroutine(Invul(1f));
     }
 
     private IEnumerator Invul(float time)
@@ -138,6 +140,7 @@ public class CharacterMovement : MonoBehaviour
         yield return new WaitForSeconds(time);
         spriteRenderer.color = Color.white;
         damageCoroutine = null;
+        invul = false;
     }
 
     private void Move()
@@ -219,13 +222,18 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public void DamageEnemyTrigger() {
+    //From sprite script managing when attacks are triggered from part of animation and how much hit stop based on the attack
+    public void DamageEnemyTrigger(float time)
+    {
         List<Enemy> enemiesToHit = GetEnemiesInRange();
-        foreach (Enemy enemy in enemiesToHit) {
+        foreach (Enemy enemy in enemiesToHit)
+        {
             Debug.Log("Hit Enemy " + enemy.enemyName);
             enemy.TakeDamage(attackDamage);
-            //Hit stop here??
+            //Hit stop
+            FindObjectOfType<HitStop>().TimeStop(time);
         }
+        
     }
 
     public List<Enemy> GetEnemiesInRange()
@@ -302,10 +310,12 @@ public class CharacterMovement : MonoBehaviour
             bTouchingLowerBounds = true;
         }
 
-        if (collision.CompareTag("LeftBounds")) {
+        if (collision.CompareTag("LeftBounds"))
+        {
             bTouchingLeftBounds = true;
         }
-        else if (collision.CompareTag("RightBounds")) {
+        else if (collision.CompareTag("RightBounds"))
+        {
             bTouchingRightBounds = true;
         }
     }
@@ -321,10 +331,12 @@ public class CharacterMovement : MonoBehaviour
             bTouchingLowerBounds = false;
         }
 
-        if (collision.CompareTag("LeftBounds")) {
+        if (collision.CompareTag("LeftBounds"))
+        {
             bTouchingLeftBounds = false;
         }
-        else if (collision.CompareTag("RightBounds")) {
+        else if (collision.CompareTag("RightBounds"))
+        {
             bTouchingRightBounds = false;
         }
     }

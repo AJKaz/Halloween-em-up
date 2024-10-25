@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class MainCharSpriteScript : MonoBehaviour
 {
-    public void DamageEnemyTrigger() {
+    public void DamageEnemyTrigger(float time)
+    {
         // Player anim damage enemy
-        GameManager.Instance.player.DamageEnemyTrigger();
+        GameManager.Instance.player.DamageEnemyTrigger(time);
     }
 }
