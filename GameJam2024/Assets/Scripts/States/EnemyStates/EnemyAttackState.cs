@@ -10,23 +10,20 @@ public class EnemyAttackState : EnemyState
 
     public override void OnEnter() {
         base.OnEnter();
-        bAttacking = false;
+        
+        bAttacking = true;
+        if (animator) {
+            animator.SetTrigger("Attack1");
+        }
     }
     public void SetAnimator(Animator a) { animator = a; }
 
     public override void OnUpdate() {
         base.OnUpdate();
 
-        bAttacking = true;
-
         if (time > enemy.attackDuration) {
             enemy.ReturnToDefaultState();
         }
-
-        if (animator) {
-            animator.SetTrigger("Attack1");
-        }
-
     }
 
     public override void OnExit() { 
