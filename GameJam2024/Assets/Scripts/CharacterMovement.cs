@@ -54,6 +54,12 @@ public class CharacterMovement : MonoBehaviour
     private Coroutine damageCoroutine;
     private float flashTime = .35f;
 
+    private AudioClip attack1;
+    private AudioClip attack2;
+    private AudioClip attack3;
+    [SerializeField] private AudioSource soundManager;
+
+
     public float health = 100f;
     public int lives = 3;
     public bool grounded { get { return onBase; } }
@@ -65,6 +71,13 @@ public class CharacterMovement : MonoBehaviour
         vSpeed = groundVSpeed;
 
         meleeStateMachine = GetComponent<StateMachine>();
+    }
+
+    private void Start()
+    {
+        attack1 = (AudioClip)Resources.Load("attack1");
+        attack2 = (AudioClip)Resources.Load("attack2");
+        attack2 = (AudioClip)Resources.Load("attack3");
     }
 
     private void Update()
@@ -232,8 +245,29 @@ public class CharacterMovement : MonoBehaviour
             enemy.TakeDamage(attackDamage);
             //Hit stop
             FindObjectOfType<HitStop>().TimeStop(time);
+
         }
         
+    }
+
+    public void SoundTrigger(int attack)
+    {
+        Debug.Log("sound");
+        AudioClip attackSound = attack1;
+        switch (attack)
+        {
+            case 0:
+                attackSound = attack1;
+                break;
+            case 1: 
+                attackSound = attack2;
+                break;
+            case 2:
+                attackSound = attack3;
+                break;
+        }
+        soundManager.clip = attackSound;
+        soundManager.Play();
     }
 
     public List<Enemy> GetEnemiesInRange()

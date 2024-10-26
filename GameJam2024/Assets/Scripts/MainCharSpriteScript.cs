@@ -9,4 +9,9 @@ public class MainCharSpriteScript : MonoBehaviour
         // Player anim damage enemy
         GameManager.Instance.player.DamageEnemyTrigger(time);
     }
+
+    public void SoundTrigger(int attack)
+    {
+        GameManager.Instance.player.SoundTrigger(attack);
+    }
 }
