@@ -104,7 +104,7 @@ MonoBehaviour:
   hSpeed: 4
   vSpeed: 2
   vPriority: 10
-  movementSmooth: 0.005
+  separateThreshold: 0.6
   bCanPath: 1
   attackDamage: 15
   attackDuration: 3
@@ -116,6 +116,8 @@ MonoBehaviour:
   verticalPathingOffset: 0.15
   animator: {fileID: 2442960451352922752}
   enemyName: Red Enemy
+  bFacingRight: 1
+  rb: {fileID: 0}
 --- !u!50 &4589960678292838592
 Rigidbody2D:
   serializedVersion: 4

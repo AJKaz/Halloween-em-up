@@ -190,8 +190,8 @@ MonoBehaviour:
   jumpingGravityScale: 2
   fallingGravityScale: 3
   attackDamage: 15
-  hAttackRange: 3
-  vAttackRange: 0.8
+  hAttackRange: 3.2
+  vAttackRange: 1
   vOffset: 0.12
   hOffset: -0.84
   spriteRenderer: {fileID: 8145109651112639117}

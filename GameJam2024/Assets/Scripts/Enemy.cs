@@ -1,44 +1,37 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private bool bAttacking = false;
-
     [SerializeField] private float health = 100f;
 
     [Header("Movement")]
     [SerializeField] private float hSpeed = 8f;
     [SerializeField] private float vSpeed = 6f;
-    [SerializeField] private float vPriority = 1.25f;
-    [SerializeField] float movementSmooth = 0.005f;
+    public float vPriority = 1.25f;
+    public float separateThreshold = 1.0f;
     /* Whether or not enemy can move */
     [SerializeField] private bool bCanPath = true;
 
     [Header("Combat")]
     [SerializeField] private float attackDamage = 15f;
-    [SerializeField] private float attackDuration = 0.8f;
+    public float attackDuration = 0.8f;
     [SerializeField] private float damageFlashTime = 0.35f;
-    [SerializeField] private float hAttackRange = 1.25f;
+    public float hAttackRange  = 1.25f;
     [SerializeField] private float vAttackRange = 0.25f;
-    [SerializeField] private float hAttackOffset = 0f;
+    public float hAttackOffset = 0f;
     [SerializeField] private float vAttackOffset = 0f;
-    [SerializeField] private float verticalPathingOffset = 0.15f;
+    public float verticalPathingOffset = 0.15f;
 
     [Header("Animation/States")]
     [SerializeField] private Animator animator;
-
-    private Vector3 velocity = Vector3.zero;
 
     [Header("Misc")]
     /* OPTIONAL: Used for debugging */
     public string enemyName = "No Name";
 
-    private bool bFacingRight = true;
-    private Rigidbody2D rb;
+    public bool bFacingRight = true;
+    [HideInInspector] public Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
     private Coroutine damageFlashCoroutine = null;
@@ -46,7 +39,14 @@ public class Enemy : MonoBehaviour
 
     private bool bDead = false;
 
-    private bool bStunned = false;
+    private EnemyState currentState;
+
+    private EnemyPathState enemyPathState;
+    private EnemyAttackState enemyAttackState;
+
+    public float HSpeed { get { return hSpeed; } }
+    public float VSpeed { get { return vSpeed; } }
+
 
     private void Awake()
     {
@@ -54,50 +54,46 @@ public class Enemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void Start() {
+        enemyPathState = new EnemyPathState(this);
+        
+        enemyAttackState = new EnemyAttackState(this);
+        enemyAttackState.SetAnimator(animator);
+
+        currentState = enemyPathState;
+    }
+
+    public void ReturnToDefaultState() {
+        currentState.OnExit();
+        currentState = enemyPathState;
+        currentState.OnEnter();
+    }
+
     void Update()
     {
         if (bDead) {
             return;
         }
-        UpdateFSM();
+        UpdateStates();
 
     }
 
-    void UpdateFSM()
+    void UpdateStates()
     {
-        if (bStunned || bAttacking) {
-            return;
-        }
-
-        if (InAttackRange())
-        {
+        if (!enemyAttackState.bAttacking && InAttackRange()) {
             rb.velocity = Vector3.zero;
-            StartAttack();
-        }
-        else if (ShouldPathToPlayer())
-        {
-            // Go Towards Player
-            PathToPosition(GameManager.Instance.player.transform.position);
-
+            currentState.OnExit();
+            currentState = enemyAttackState;
+            currentState.OnEnter();
         }
 
-    }
+        currentState.OnUpdate();
 
-    private void Move(float hMove, float vMove)
-    {
-        if (hMove < 0 && bFacingRight) Flip();
-        else if (hMove > 0 && !bFacingRight) Flip();
-
-        Vector3 targetVelocity = new Vector2(hMove * hSpeed, vMove * vSpeed);
-
-        Vector2 velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref this.velocity, movementSmooth);
-        rb.velocity = velocity;
-    }
-
-    private void Flip()
-    {
-        bFacingRight = !bFacingRight;
-        transform.Rotate(0, 180, 0);
+        // TODO:
+        // FLEE STATE
+        // ATTACK DAMAGE (TAKE TRIGGER FROM ANIMS TO GET TIMINGS?)
+        // STUNNED STATE ?
+        
     }
 
     public void TakeDamage(float damage)
@@ -148,15 +144,15 @@ public class Enemy : MonoBehaviour
     }
 
 
-    void StartAttack()
+    /*void StartAttack()
     {
         if (animator) {
             animator.SetTrigger("Attack1");
         }
         StartCoroutine(AttackCoroutine());
-    }
+    }*/
 
-    IEnumerator AttackCoroutine()
+    /*IEnumerator AttackCoroutine()
     {
         bAttacking = true;
 
@@ -166,34 +162,22 @@ public class Enemy : MonoBehaviour
 
         yield return new WaitForSeconds(attackDuration - 0.15f);
         bAttacking = false;
-    }
+    }*/
 
-    void PathToPosition(Vector3 position)
-    {
-        Vector2 direction = position - transform.position;
-        Vector2 distance = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
-        float hActualRange = hAttackRange + hAttackOffset;
-        //float vActualRange = vAttackRange;
-        if (distance.x > hActualRange || distance.y > verticalPathingOffset)
-        {
-            if (distance.x < hActualRange) direction.x = 0;
-            if (distance.y < verticalPathingOffset) direction.y = 0;
-            else direction.y *= vPriority;
-            direction.Normalize();
-
-            Move(direction.x, direction.y);
-        }
-        else
-        {
-            rb.velocity = Vector3.zero;
-        }
+    public void Flip() {
+        bFacingRight = !bFacingRight;
+        transform.Rotate(0, 180, 0);
     }
 
     bool InAttackRange()
     {
-        Vector2 playerPosition = GameManager.Instance.player.transform.position;
+        Vector3 playerPosition = GameManager.Instance.player.transform.position;
 
-        Vector3 distance = GameManager.Instance.player.transform.position - transform.position;
+        if (bFacingRight && playerPosition.x < transform.position.x || !bFacingRight && playerPosition.x > transform.position.x) {
+            Flip();
+        }
+
+        Vector3 distance = playerPosition - transform.position;
         distance.x = Mathf.Abs(distance.x);
         distance.y = Mathf.Abs(distance.y);
 
@@ -216,12 +200,11 @@ public class Enemy : MonoBehaviour
     }
 
     private IEnumerator StunCoroutine() {
-        bStunned = true;
-        bAttacking = false;
+        //bStunned = true;
 
         yield return new WaitForSeconds(damageFlashTime);
 
-        bStunned = false;
+       // bStunned = false;
         stunnedCoroutine = null;
     }
 
