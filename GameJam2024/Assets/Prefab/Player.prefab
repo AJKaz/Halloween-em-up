@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 5034796159068473707}
   m_Layer: 9
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   hOffset: -0.84
   spriteRenderer: {fileID: 8145109651112639117}
   soundManager: {fileID: 5034796159068473707}
-  health: 10
+  health: 20
 --- !u!114 &6710592902542855869
 MonoBehaviour:
   m_ObjectHideFlags: 0

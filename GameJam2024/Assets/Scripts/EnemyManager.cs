@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour {
@@ -14,12 +13,14 @@ public class EnemyManager : MonoBehaviour {
 
     [SerializeField] private Transform parentTransform;
 
+    
+
     void Update() {
         int enemiesAlive = GameManager.Instance.enemies.Count;
-        if (enemiesAlive < 3 && GameManager.Instance.player.health > 50f) {
+        if (enemiesAlive < 3 && GameManager.Instance.player.health > 10f) {
             StartCoroutine(SpawnRandomEnemiesNearby(maxEnemies - 1 - enemiesAlive));
         }
-        else if (GameManager.Instance.player.health < 50f && GameManager.Instance.player.health > 0f && enemiesAlive < 2) {
+        else if (GameManager.Instance.player.health <= 10f && GameManager.Instance.player.health > 0f && enemiesAlive < 2) {
             StartCoroutine(SpawnRandomEnemiesNearby(maxEnemies - 1 - enemiesAlive));
         }
     }

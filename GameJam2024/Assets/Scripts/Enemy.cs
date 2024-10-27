@@ -28,6 +28,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float vAttackOffset = 0f;
     public float verticalPathingOffset = 0.15f;
     [SerializeField] private int scoreIncreaseAmount = 100;
+    [SerializeField] private Projectile projectilePrefab;
+    [SerializeField] private Transform projectileSpawnPoint;
 
     [Header("Animation/States")]
     [SerializeField] private Animator animator;
@@ -108,6 +110,15 @@ public class Enemy : MonoBehaviour
         // ATTACK DAMAGE (TAKE TRIGGER FROM ANIMS TO GET TIMINGS?)
         // STUNNED STATE ?
         
+    }
+
+    /// <summary>
+    /// Called from animation frame
+    /// Purely for cosmetic projectiles, Zombie does not use this
+    /// </summary>
+    public void ShootCosmeticProjectile() {
+        Projectile projectile = Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, Quaternion.identity);
+        projectile.SetDirection(bFacingRight);
     }
 
     /// <summary>

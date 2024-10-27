@@ -104,7 +104,7 @@ MonoBehaviour:
   hSpeed: 4
   vSpeed: 2
   vPriority: 10
-  separateThreshold: 0.6
+  separateThreshold: 0.4
   attackDamage: 1
   attackDuration: 3
   damageFlashTime: 1
@@ -114,6 +114,8 @@ MonoBehaviour:
   vAttackOffset: 0.21
   verticalPathingOffset: 0.15
   scoreIncreaseAmount: 250
+  projectilePrefab: {fileID: 0}
+  projectileSpawnPoint: {fileID: 0}
   animator: {fileID: 2442960451352922752}
   enemyName: Zombie
   bFacingRight: 1

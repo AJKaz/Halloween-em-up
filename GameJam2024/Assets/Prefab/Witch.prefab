@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8824774237008946942}
+  - {fileID: 8194614662827779624}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7555907444098080089
@@ -104,7 +105,7 @@ MonoBehaviour:
   hSpeed: 4
   vSpeed: 2
   vPriority: 10
-  separateThreshold: 1
+  separateThreshold: 0.6
   attackDamage: 1
   attackDuration: 3
   damageFlashTime: 1
@@ -114,6 +115,8 @@ MonoBehaviour:
   vAttackOffset: 0.21
   verticalPathingOffset: 0.15
   scoreIncreaseAmount: 400
+  projectilePrefab: {fileID: 3394234119474967629, guid: a2d8954481b08904a8ebdbb11585c99d, type: 3}
+  projectileSpawnPoint: {fileID: 8194614662827779624}
   animator: {fileID: 1401523202873023337}
   enemyName: Witch
   bFacingRight: 1
@@ -251,3 +254,34 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!1 &3571755653615158257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8194614662827779624}
+  m_Layer: 0
+  m_Name: ProjectileSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8194614662827779624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3571755653615158257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.13, y: 1.69, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2705022220068837617}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
