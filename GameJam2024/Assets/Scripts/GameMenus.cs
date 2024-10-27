@@ -6,7 +6,7 @@ public class GameMenus : MonoBehaviour {
 
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject loseScreen;
-
+    [SerializeField] private GameObject Tutorial;
     [SerializeField] private TMP_Text candyStolenText;
 
     [SerializeField] private Transform[] panelsToDisable;
@@ -22,6 +22,8 @@ public class GameMenus : MonoBehaviour {
     private void Start() {
         pauseMenu.SetActive(false);
         loseScreen.SetActive(false);
+        Tutorial.SetActive(true);
+        Time.timeScale = 0f;
     }
 
     private void Update() {
@@ -43,6 +45,7 @@ public class GameMenus : MonoBehaviour {
 
     public void ResumeGame() {
         pauseMenu.SetActive(false);
+        Tutorial.SetActive(false);
         Time.timeScale = 1f;
         bGamePaused = false;
     }

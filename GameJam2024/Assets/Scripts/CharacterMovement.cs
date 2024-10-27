@@ -57,6 +57,7 @@ public class CharacterMovement : MonoBehaviour
     private AudioClip attack1;
     private AudioClip attack2;
     private AudioClip attack3;
+    private AudioClip hurt;
     [SerializeField] private AudioSource soundManager;
 
     public float health = 100f;
@@ -77,6 +78,7 @@ public class CharacterMovement : MonoBehaviour
         attack1 = (AudioClip)Resources.Load("attack1");
         attack2 = (AudioClip)Resources.Load("attack2");
         attack3 = (AudioClip)Resources.Load("attack3");
+        hurt = (AudioClip)Resources.Load("hurt");
     }
 
     private void Update()
@@ -130,6 +132,8 @@ public class CharacterMovement : MonoBehaviour
     private IEnumerator FlashTint(float time, Color color)
     {
         //Hit stop
+        soundManager.clip = hurt;
+        soundManager.Play();
         GameManager.Instance.playerAnimator.SetBool("Hurt",true);
         FindObjectOfType<HitStop>().TimeStop(0.1f);
         invul = true;
@@ -139,6 +143,7 @@ public class CharacterMovement : MonoBehaviour
 
         yield return new WaitForSeconds(time);
         GameManager.Instance.playerAnimator.SetBool("Hurt", false);
+        soundManager.clip = attack1;
         damageCoroutine = StartCoroutine(Invul(1f));
     }
 
