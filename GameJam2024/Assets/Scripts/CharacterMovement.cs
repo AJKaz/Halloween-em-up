@@ -76,7 +76,7 @@ public class CharacterMovement : MonoBehaviour
     {
         attack1 = (AudioClip)Resources.Load("attack1");
         attack2 = (AudioClip)Resources.Load("attack2");
-        attack2 = (AudioClip)Resources.Load("attack3");
+        attack3 = (AudioClip)Resources.Load("attack3");
     }
 
     private void Update()
@@ -237,7 +237,7 @@ public class CharacterMovement : MonoBehaviour
             enemy.TakeDamage(attackDamage);
             //Hit stop
             FindObjectOfType<HitStop>().TimeStop(time);
-
+            soundManager.Play();
         }
         
     }
@@ -259,7 +259,6 @@ public class CharacterMovement : MonoBehaviour
                 break;
         }
         soundManager.clip = attackSound;
-        soundManager.Play();
     }
 
     public List<Enemy> GetEnemiesInRange()
