@@ -130,11 +130,15 @@ public class CharacterMovement : MonoBehaviour
     private IEnumerator FlashTint(float time, Color color)
     {
         //Hit stop
+        GameManager.Instance.playerAnimator.SetBool("Hurt",true);
         FindObjectOfType<HitStop>().TimeStop(0.1f);
         invul = true;
         spriteRenderer.color = color;
 
+
+
         yield return new WaitForSeconds(time);
+        GameManager.Instance.playerAnimator.SetBool("Hurt", false);
         damageCoroutine = StartCoroutine(Invul(1f));
     }
 

@@ -211,6 +211,7 @@ public class Enemy : MonoBehaviour
     private IEnumerator FlashTint(float time, Color color)
     {
         spriteRenderer.color = color;
+        this.animator.SetTrigger("Hurt");
         
         yield return new WaitForSeconds(time);
 
