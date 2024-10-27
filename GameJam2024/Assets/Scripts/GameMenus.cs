@@ -64,10 +64,7 @@ public class GameMenus : MonoBehaviour {
             t.gameObject.SetActive(false);
         }
 
-        float score = GameManager.Instance.score;
-        if (score < 0) score = 0;
-        if (score > 99) score = 99;
-        candyStolenText.text = score.ToString();
+        candyStolenText.text = GameManager.Instance.score.ToString("D7");
 
         bGamePaused = true;
         loseScreen.SetActive(true);

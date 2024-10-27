@@ -6,7 +6,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     [SerializeField] private bool canMove = true;
-    [Tooltip(("If your character does not jump, ignore all below 'Jumping Character'"))]
+    
     [SerializeField] private bool doesCharacterJump = false;
 
     [Header("Base / Root")]
@@ -59,11 +59,10 @@ public class CharacterMovement : MonoBehaviour
     private AudioClip attack3;
     [SerializeField] private AudioSource soundManager;
 
-
     public float health = 100f;
-    public int lives = 3;
+    
+    private bool invul = false;
     public bool grounded { get { return onBase; } }
-
 
     private void Awake()
     {
@@ -109,14 +108,8 @@ public class CharacterMovement : MonoBehaviour
         if (GameMenus.bGamePaused) return;
 
         Move();
-
-        if (lives <= 0)
-        {
-            // go to lose screen
-            GameMenus.Instance.EnableLoseScreen();
-        }
     }
-    private bool invul = false;
+    
     public void TakeDamage(float damage)
     {
         if (invul == true)
@@ -128,8 +121,7 @@ public class CharacterMovement : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            lives--;
-            health = 500;
+            GameMenus.Instance.EnableLoseScreen();
         }
         
         damageCoroutine = StartCoroutine(FlashTint(flashTime, Color.red));
@@ -326,12 +318,7 @@ public class CharacterMovement : MonoBehaviour
             onBase = true;
             currentJumps = 0;
         }
-
-
-
     }
-
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

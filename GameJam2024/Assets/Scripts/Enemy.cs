@@ -1,6 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+public enum EnemyType {
+    Zombie = 0,
+    Witch = 1,
+
+    DEFAULT = 2,
+}
+
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float health = 100f;
@@ -10,8 +17,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float vSpeed = 6f;
     public float vPriority = 1.25f;
     public float separateThreshold = 1.0f;
-    /* Whether or not enemy can move */
-    [SerializeField] private bool bCanPath = true;
 
     [Header("Combat")]
     [SerializeField] private float attackDamage = 15f;
@@ -22,6 +27,7 @@ public class Enemy : MonoBehaviour
     public float hAttackOffset = 0f;
     [SerializeField] private float vAttackOffset = 0f;
     public float verticalPathingOffset = 0.15f;
+    [SerializeField] private int scoreIncreaseAmount = 100;
 
     [Header("Animation/States")]
     [SerializeField] private Animator animator;
@@ -43,6 +49,9 @@ public class Enemy : MonoBehaviour
 
     private EnemyPathState enemyPathState;
     private EnemyAttackState enemyAttackState;
+    private EnemyDeathState enemyDeathState;
+
+    public EnemyType enemyType;
 
     public float HSpeed { get { return hSpeed; } }
     public float VSpeed { get { return vSpeed; } }
@@ -60,13 +69,19 @@ public class Enemy : MonoBehaviour
         enemyAttackState = new EnemyAttackState(this);
         enemyAttackState.SetAnimator(animator);
 
+        enemyDeathState = new EnemyDeathState(this);
+
         currentState = enemyPathState;
     }
 
-    public void ReturnToDefaultState() {
+    private void SetState(EnemyState state) {
         currentState.OnExit();
-        currentState = enemyPathState;
+        currentState = state;
         currentState.OnEnter();
+    }
+
+    public void ReturnToDefaultState() {
+        SetState(enemyPathState);
     }
 
     void Update()
@@ -82,9 +97,8 @@ public class Enemy : MonoBehaviour
     {
         if (!enemyAttackState.bAttacking && InAttackRange()) {
             rb.velocity = Vector3.zero;
-            currentState.OnExit();
-            currentState = enemyAttackState;
-            currentState.OnEnter();
+
+            SetState(enemyAttackState);
         }
 
         currentState.OnUpdate();
@@ -94,6 +108,16 @@ public class Enemy : MonoBehaviour
         // ATTACK DAMAGE (TAKE TRIGGER FROM ANIMS TO GET TIMINGS?)
         // STUNNED STATE ?
         
+    }
+
+    /// <summary>
+    /// Called from animation frame
+    /// Damages player IF said player is in range at that anim frame
+    /// </summary>
+    public void TryDamagePlayer() {
+        if (InAttackRange()) {
+            GameManager.Instance.player.TakeDamage(attackDamage);
+        }
     }
 
     public void TakeDamage(float damage)
@@ -112,57 +136,33 @@ public class Enemy : MonoBehaviour
         health -= damage;
         if (health <= 0) {
             bDead = true;
+
+            SetState(enemyDeathState);
+
             StartCoroutine(DeathCoroutine());
         }
     }
 
     IEnumerator DeathCoroutine() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             spriteRenderer.color = Color.clear;
-            yield return new WaitForSeconds(0.45f);
+            yield return new WaitForSeconds(0.2f);
             spriteRenderer.color = Color.white;
-            yield return new WaitForSeconds(0.45f);
+            yield return new WaitForSeconds(0.2f);
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             spriteRenderer.color = Color.clear;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.15f);
             spriteRenderer.color = Color.white;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.15f);
         }
        
         spriteRenderer.color = Color.clear;
-        GameManager.Instance.score++;
+        GameManager.Instance.score += scoreIncreaseAmount;
         GameManager.Instance.enemiesKilled++;
         GameManager.Instance.enemies.Remove(this);
         Destroy(gameObject);
     }
-
-    bool ShouldPathToPlayer() {
-        // TODO: Define path to parameters
-
-        return bCanPath && health > 0f;
-    }
-
-
-    /*void StartAttack()
-    {
-        if (animator) {
-            animator.SetTrigger("Attack1");
-        }
-        StartCoroutine(AttackCoroutine());
-    }*/
-
-    /*IEnumerator AttackCoroutine()
-    {
-        bAttacking = true;
-
-        yield return new WaitForSeconds(0.15f);
-
-        GameManager.Instance.player.TakeDamage(attackDamage);
-
-        yield return new WaitForSeconds(attackDuration - 0.15f);
-        bAttacking = false;
-    }*/
 
     public void Flip() {
         bFacingRight = !bFacingRight;

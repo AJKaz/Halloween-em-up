@@ -197,8 +197,7 @@ MonoBehaviour:
   hOffset: -0.84
   spriteRenderer: {fileID: 8145109651112639117}
   soundManager: {fileID: 5034796159068473707}
-  health: 500
-  lives: 3
+  health: 10
 --- !u!114 &6710592902542855869
 MonoBehaviour:
   m_ObjectHideFlags: 0

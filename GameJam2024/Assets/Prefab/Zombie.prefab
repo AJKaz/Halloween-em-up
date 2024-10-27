@@ -105,8 +105,7 @@ MonoBehaviour:
   vSpeed: 2
   vPriority: 10
   separateThreshold: 0.6
-  bCanPath: 1
-  attackDamage: 15
+  attackDamage: 1
   attackDuration: 3
   damageFlashTime: 1
   hAttackRange: 1.93
@@ -114,10 +113,12 @@ MonoBehaviour:
   hAttackOffset: -0.4
   vAttackOffset: 0.21
   verticalPathingOffset: 0.15
+  scoreIncreaseAmount: 250
   animator: {fileID: 2442960451352922752}
-  enemyName: Red Enemy
+  enemyName: Zombie
   bFacingRight: 1
   rb: {fileID: 0}
+  enemyType: 0
 --- !u!50 &4589960678292838592
 Rigidbody2D:
   serializedVersion: 4

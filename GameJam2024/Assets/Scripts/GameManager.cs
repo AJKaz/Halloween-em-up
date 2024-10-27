@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text livesText;
 
-    public float score = 0;
+    public int score = 0;
     public float enemiesKilled = 0;
 
 
@@ -29,13 +29,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (score < 0) score = 0;
-        if (score > 99) score = 99;
-        candyStolenText.text = score.ToString();
+        candyStolenText.text = score.ToString("D7");
 
         float localHealth = Mathf.Clamp(player.health, 0f, 999f);
         healthText.text = "HP: " + localHealth.ToString();
-
-        livesText.text = "Lives: " + Mathf.Clamp(player.lives, 0, 9).ToString();
     }
 }
