@@ -13,7 +13,6 @@ public class GroundMeleeState : MeleeBaseState
         attackIndex = 1;
         duration = 0.5f;
         animator.SetTrigger("Attack" + attackIndex);
-        Debug.Log("Player Attack " + attackIndex + " fired");
     }
 
     public override void OnUpdate()

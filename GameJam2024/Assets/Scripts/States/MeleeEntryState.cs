@@ -16,7 +16,7 @@ public class MeleeEntryState : MeleeBaseState
         base.OnEnter(sMachine);
         
         grounded = GetComponent<CharacterMovement>().grounded;
-        Debug.Log(grounded);
+        
         if (grounded)
         {
             sMachine.SetNextState(new GroundMeleeState());

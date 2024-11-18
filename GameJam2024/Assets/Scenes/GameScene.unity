@@ -3859,6 +3859,7 @@ MonoBehaviour:
   candyStolenText: {fileID: 686836321}
   healthText: {fileID: 421311260}
   livesText: {fileID: 0}
+  rageRange: 60
   score: 0
   enemiesKilled: 0
 --- !u!4 &1983118590

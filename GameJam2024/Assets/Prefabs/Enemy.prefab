@@ -187,8 +187,7 @@ MonoBehaviour:
   hSpeed: 4
   vSpeed: 2
   vPriority: 10
-  separateThreshold: 1
-  bCanPath: 1
+  separateThreshold: 1.1
   attackDamage: 1
   attackDuration: 0.8
   damageFlashTime: 0.35
@@ -197,11 +196,16 @@ MonoBehaviour:
   hAttackOffset: 0
   vAttackOffset: 0
   verticalPathingOffset: 0.15
+  scoreIncreaseAmount: 100
+  projectilePrefab: {fileID: 0}
+  projectileSpawnPoint: {fileID: 0}
   animator: {fileID: 0}
   enemyName: Red Enemy
   bFacingRight: 1
   rb: {fileID: 0}
   enemyType: 0
+  rageThreshold: 2
+  enragedTime: 10
 --- !u!50 &1317045819892809317
 Rigidbody2D:
   serializedVersion: 4

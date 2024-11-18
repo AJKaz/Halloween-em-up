@@ -9,20 +9,20 @@ public class EnemyManager : MonoBehaviour {
 
     [SerializeField] private float hSpawnOffset = 20f;
 
-    [SerializeField] private int maxEnemies = 6;
+    [SerializeField] private int idealLivingEnemies = 6;
+    [SerializeField] private float spawnDelay = 1.0f;
 
     [SerializeField] private Transform parentTransform;
 
-    
-
-    void Update() {
+    public void TrySpawnEnemies() {
         int enemiesAlive = GameManager.Instance.enemies.Count;
-        if (enemiesAlive < 3 && GameManager.Instance.player.health > 10f) {
-            StartCoroutine(SpawnRandomEnemiesNearby(maxEnemies - 1 - enemiesAlive));
+
+        int ranNum = Random.Range(0, idealLivingEnemies + 1);
+
+        if (ranNum <= idealLivingEnemies - enemiesAlive) {
+            StartCoroutine(SpawnRandomEnemiesNearby(idealLivingEnemies - enemiesAlive));
         }
-        else if (GameManager.Instance.player.health <= 10f && GameManager.Instance.player.health > 0f && enemiesAlive < 2) {
-            StartCoroutine(SpawnRandomEnemiesNearby(maxEnemies - 1 - enemiesAlive));
-        }
+
     }
 
     private IEnumerator SpawnRandomEnemiesNearby(int numToSpawn) {
@@ -36,7 +36,7 @@ public class EnemyManager : MonoBehaviour {
             Enemy newEnemy = Instantiate(enemyToSpawn, spawnLocation, Quaternion.identity, parentTransform);
             GameManager.Instance.enemies.Add(newEnemy);
 
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(spawnDelay);
         }
     }
 }

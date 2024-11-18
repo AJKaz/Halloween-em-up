@@ -18,11 +18,9 @@ public class HitStop : MonoBehaviour
 
     IEnumerator Wait(float time)
     {
-        Debug.Log("Wait");
         wait = true;
         yield return new WaitForSecondsRealtime(time);
         Time.timeScale = 1.0f;
         wait = false;
-        Debug.Log("Resume");
     }
 }

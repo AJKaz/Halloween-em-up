@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
@@ -116,7 +115,6 @@ public class CharacterMovement : MonoBehaviour
     {
         if (invul == true)
         {
-            Debug.Log("Missed");
             return;
         }
 
@@ -228,7 +226,6 @@ public class CharacterMovement : MonoBehaviour
 
     public void Attack()
     {
-        Debug.Log("Attack");
 
         if (meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
         {
@@ -242,7 +239,6 @@ public class CharacterMovement : MonoBehaviour
         List<Enemy> enemiesToHit = GetEnemiesInRange();
         foreach (Enemy enemy in enemiesToHit)
         {
-            Debug.Log("Hit Enemy " + enemy.enemyName);
             enemy.TakeDamage(attackDamage);
             //Hit stop
             FindObjectOfType<HitStop>().TimeStop(time);
@@ -253,7 +249,6 @@ public class CharacterMovement : MonoBehaviour
 
     public void SoundTrigger(int attack)
     {
-        Debug.Log("sound");
         AudioClip attackSound = attack1;
         switch (attack)
         {

@@ -10,7 +10,7 @@ public enum EnemyType {
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float health = 100f;
+    public float health = 100f;
 
     [Header("Movement")]
     [SerializeField] private float hSpeed = 8f;
@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     public float separateThreshold = 1.0f;
 
     [Header("Combat")]
-    [SerializeField] private float attackDamage = 15f;
+    public float attackDamage = 15f;
     public float attackDuration = 0.8f;
     [SerializeField] private float damageFlashTime = 0.35f;
     public float hAttackRange  = 1.25f;
@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
 
     public bool bFacingRight = true;
     [HideInInspector] public Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
 
     private Coroutine damageFlashCoroutine = null;
     private Coroutine stunnedCoroutine = null;
@@ -55,9 +55,21 @@ public class Enemy : MonoBehaviour
 
     public EnemyType enemyType;
 
+    // Enraged Stuff
+    private int rageMeter = 0;
+    [SerializeField] private int rageThreshold = 2;
+    public float enragedTime = 10f;
+    private float preRagedHealth;
+    private float preRagedHSpeed;
+    private float preRagedVSpeed;
+    private float preRagedAttackDamage;
+    private bool bEnraged = false;
+    private float enragedTimer = 0f;
+
     public float HSpeed { get { return hSpeed; } }
     public float VSpeed { get { return vSpeed; } }
 
+    
 
     private void Awake()
     {
@@ -91,6 +103,14 @@ public class Enemy : MonoBehaviour
         if (bDead) {
             return;
         }
+
+        if (bEnraged) {
+            enragedTimer += Time.deltaTime;
+            if (enragedTimer > enragedTime) {
+                UnEnrageEnemy();
+            }
+        }
+
         UpdateStates();
 
     }
@@ -167,11 +187,15 @@ public class Enemy : MonoBehaviour
             spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(0.15f);
         }
-       
         spriteRenderer.color = Color.clear;
+
+
         GameManager.Instance.score += scoreIncreaseAmount;
         GameManager.Instance.enemiesKilled++;
         GameManager.Instance.enemies.Remove(this);
+
+        GameManager.Instance.OnEnemyKilled(this);
+
         Destroy(gameObject);
     }
 
@@ -229,6 +253,46 @@ public class Enemy : MonoBehaviour
         spriteRenderer.color = Color.white;
 
         damageFlashCoroutine = null;
+    }
+
+    public void IncrementRageMeter() {
+        rageMeter++;
+
+        if (rageMeter > rageThreshold) {
+            EnrageEnemy();
+        }
+    }
+
+    private void EnrageEnemy() {
+        bEnraged = true;
+        
+        preRagedHealth = health;
+        health *= 1.5f;
+
+        preRagedHSpeed = HSpeed;
+        preRagedVSpeed = VSpeed;
+        hSpeed *= 1.5f;
+        vSpeed *= 1.5f;
+
+        preRagedAttackDamage = attackDamage;
+        attackDamage *= 1.25f;
+
+        spriteRenderer.color = new Color(0.3f, 0.008f, 0.66f);
+    }
+
+    private void UnEnrageEnemy() {
+        if (health > preRagedHealth) health = preRagedHealth;
+
+        hSpeed = preRagedHSpeed;
+        vSpeed = preRagedVSpeed;
+
+        attackDamage = preRagedAttackDamage;
+
+        spriteRenderer.color = Color.white;
+
+        enragedTimer = 0f;
+        bEnraged = false;
+        rageMeter = 0;
     }
 
     private void OnDrawGizmos()

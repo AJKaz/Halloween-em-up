@@ -18,13 +18,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text livesText;
 
+    [SerializeField] private float sqrRageRange = 60f;
+
     public int score = 0;
     public float enemiesKilled = 0;
 
+    [Header("Falsifiable Claim")]
+    [SerializeField] private bool enableEnragedState = true;
 
     void Awake()
     {
         Instance = this;
+    }
+
+    private void Start() {
+        enemyManager.TrySpawnEnemies();
     }
 
     private void Update()
@@ -33,5 +41,19 @@ public class GameManager : MonoBehaviour
 
         float localHealth = Mathf.Clamp(player.health, 0f, 999f);
         healthText.text = "HP: " + localHealth.ToString();
+    }
+
+    public void OnEnemyKilled(Enemy enemy) {
+        enemyManager.TrySpawnEnemies();
+
+        if (!enableEnragedState) return;
+
+        foreach (Enemy e in enemies) {
+            if (e ==  enemy) continue;
+
+            if ((e.transform.position - enemy.transform.position).sqrMagnitude < sqrRageRange) {
+                e.IncrementRageMeter();
+            }
+        }
     }
 }
