@@ -9,10 +9,27 @@ public class EnemyManager : MonoBehaviour {
 
     [SerializeField] private float hSpawnOffset = 20f;
 
+    [Header("Spawning Variables")]
     [SerializeField] private int idealLivingEnemies = 6;
     [SerializeField] private float spawnDelay = 1.0f;
+    [SerializeField] private float incrementTimeInSecs = 30f;
+    [SerializeField] private int maxEnemies = 12;
+
+    private float incrementTimer = 0f;
 
     [SerializeField] private Transform parentTransform;
+
+    private void Update() {
+        if (GameMenus.bGamePaused) return;
+
+        incrementTimer += Time.deltaTime;
+
+        if (incrementTimer > incrementTimeInSecs) {
+            idealLivingEnemies++;
+            if (idealLivingEnemies > maxEnemies) idealLivingEnemies = maxEnemies;
+            incrementTimer = 0f;
+        }
+    }
 
     public void TrySpawnEnemies() {
         int enemiesAlive = GameManager.Instance.enemies.Count;
