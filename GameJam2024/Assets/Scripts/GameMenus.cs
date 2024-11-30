@@ -8,6 +8,7 @@ public class GameMenus : MonoBehaviour {
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private GameObject Tutorial;
     [SerializeField] private TMP_Text candyStolenText;
+    [SerializeField] private TMP_Text timeSurvivedText;
 
     [SerializeField] private Transform[] panelsToDisable;
 
@@ -68,7 +69,7 @@ public class GameMenus : MonoBehaviour {
         }
 
         candyStolenText.text = GameManager.Instance.score.ToString("D7");
-
+        timeSurvivedText.text = GameManager.Instance.player.TimeAlive.ToString("F0") + "s";
         bGamePaused = true;
         loseScreen.SetActive(true);
     }

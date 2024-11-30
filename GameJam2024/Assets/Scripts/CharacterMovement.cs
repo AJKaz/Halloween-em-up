@@ -62,7 +62,12 @@ public class CharacterMovement : MonoBehaviour
     public float health = 100f;
     
     private bool invul = false;
+
+    private float timeAlive = 0f;
+
     public bool grounded { get { return onBase; } }
+
+    public float TimeAlive { get { return timeAlive; } }
 
     private void Awake()
     {
@@ -78,11 +83,15 @@ public class CharacterMovement : MonoBehaviour
         attack2 = (AudioClip)Resources.Load("attack2");
         attack3 = (AudioClip)Resources.Load("attack3");
         hurt = (AudioClip)Resources.Load("hurt");
+
+        timeAlive = 0f;
     }
 
     private void Update()
     {
         if (GameMenus.bGamePaused) return;
+
+        timeAlive += Time.deltaTime;
 
         controls = input.GetInput();
         if (controls.JumpState && currentJumps < possibleJumps)
