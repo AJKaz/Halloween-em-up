@@ -66,6 +66,8 @@ public class Enemy : MonoBehaviour
     private bool bEnraged = false;
     private float enragedTimer = 0f;
 
+    private Color enragedColor = new Color(0.3f, 0.008f, 0.66f);
+
     public float HSpeed { get { return hSpeed; } }
     public float VSpeed { get { return vSpeed; } }
 
@@ -250,7 +252,7 @@ public class Enemy : MonoBehaviour
         
         yield return new WaitForSeconds(time);
 
-        spriteRenderer.color = Color.white;
+        spriteRenderer.color = bEnraged ? enragedColor : Color.white;
 
         damageFlashCoroutine = null;
     }
@@ -277,7 +279,7 @@ public class Enemy : MonoBehaviour
         preRagedAttackDamage = attackDamage;
         attackDamage *= 1.25f;
 
-        spriteRenderer.color = new Color(0.3f, 0.008f, 0.66f);
+        spriteRenderer.color = enragedColor;
     }
 
     private void UnEnrageEnemy() {

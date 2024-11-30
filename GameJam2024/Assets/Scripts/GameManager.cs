@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         candyStolenText.text = score.ToString("D7");
 
         float localHealth = Mathf.Clamp(player.health, 0f, 999f);
-        healthText.text = "HP: " + localHealth.ToString();
+        healthText.text = "HP: " + localHealth.ToString("F1");
     }
 
     public void OnEnemyKilled(Enemy enemy) {
